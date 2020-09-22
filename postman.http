@@ -1,0 +1,8 @@
+// login 测试
+POST http://47.96.235.211:3000/login/ HTTP/1.1
+content-type: application/json
+
+{
+    "usr": "user",
+    "pwd": "000"
+}
