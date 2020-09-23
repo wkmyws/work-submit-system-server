@@ -12,7 +12,7 @@
     code,// 状态码
     msg, // 状态信息
     token,// code==0时 返回token 和identify
-    identify,
+    identify, // 0 为管理员（老师） 1为学生
 }
 ```
 
@@ -41,5 +41,52 @@ Connection: close
   "msg": "",
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMDc5MDE3M30.olO1UKaSp89egZF6tRDhQTuP9yi2166JlsjqwBsrFO4",
   "identify": 1
+}
+```
+
+
+### POST publish_assignments
+
+```
+{
+    token, // 登陆后获取的token
+    work_name, // 作业名称
+    work_desc // 作业说明
+}
+```
+
+```
+{
+    code, // 状态码
+    msg, //状态信息
+    token, // 更新后的token
+    work_code, // 作业码
+}
+```
+
+test
+
+```
+POST http://47.96.235.211:3000/publish_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDA4NzYwMTQsImV4cCI6MTYwMDg3NzgxNH0.hosTJDX_zgoLwzfTYZUmt15KiHYQiD_MslStfGfQ0HY",
+    "work_name": "测试1238",
+    "work_desc": "描述"
+}
+```
+
+```
+HTTP/1.1 200 OK
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 41
+Date: Wed, 23 Sep 2020 15:49:16 GMT
+Connection: close
+
+{
+  "code": 22,
+  "msg": "作业名不能重复"
 }
 ```
