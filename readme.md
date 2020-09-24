@@ -1,13 +1,48 @@
+## 项目结构
+
+* /readme
+
+  项目开发文档
+
+* /server
+
+  子服务模块
+
+* /work
+
+  提交文件地址
+
+* app.js
+
+  服务器入口
+
+* readme.md
+
+  项目总说明文档
+
+## 服务器接口
+
+> 依次为
+> 
+> + METHOD ROUTER
+> + 【参数】
+> + 【返回参数】
+> + test
+> + 【测试参数】
+> + 【测试的返回参数】
+>  
+> （采用 `rest client` 编写的测试语法）
+
 ### POST /login
 
-```
+``` 
 {
     usr,
     pwd,
 }
 ```
 
-```
+``` 
 {
     code,// 状态码
     msg, // 状态信息
@@ -18,7 +53,7 @@
 
 test
 
-```
+``` 
 POST http://47.96.235.211:3000/login/ HTTP/1.1
 content-type: application/json
 
@@ -28,7 +63,7 @@ content-type: application/json
 }
 ```
 
-```
+``` 
 HTTP/1.1 200 OK
 my-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMDc5MDE3M30.olO1UKaSp89egZF6tRDhQTuP9yi2166JlsjqwBsrFO4
 Content-Type: application/json; charset=utf-8
@@ -44,10 +79,9 @@ Connection: close
 }
 ```
 
-
 ### POST publish_assignments
 
-```
+``` 
 {
     token, // 登陆后获取的token
     work_name, // 作业名称
@@ -55,7 +89,7 @@ Connection: close
 }
 ```
 
-```
+``` 
 {
     code, // 状态码
     msg, //状态信息
@@ -66,7 +100,7 @@ Connection: close
 
 test
 
-```
+``` 
 POST http://47.96.235.211:3000/publish_assignments/ HTTP/1.1
 content-type: application/json
 
@@ -77,7 +111,7 @@ content-type: application/json
 }
 ```
 
-```
+``` 
 HTTP/1.1 200 OK
 Vary: Origin
 Content-Type: application/json; charset=utf-8
