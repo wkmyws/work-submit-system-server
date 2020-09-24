@@ -23,7 +23,7 @@
 ## 服务器接口
 
 > 依次为
-> 
+>  
 > + METHOD ROUTER
 > + 【参数】
 > + 【返回参数】
@@ -34,6 +34,8 @@
 > （采用 `rest client` 编写的测试语法）
 
 ### POST /login
+
+> 用户身份验证
 
 ``` 
 {
@@ -79,7 +81,9 @@ Connection: close
 }
 ```
 
-### POST publish_assignments
+### POST /publish_assignments
+
+> 发布作业
 
 ``` 
 {
@@ -123,4 +127,93 @@ Connection: close
   "code": 22,
   "msg": "作业名不能重复"
 }
+```
+
+### POST /delete_assignments
+
+> 删除作业
+
+``` 
+{
+  token,
+  work_code, // 作业码
+}
+```
+
+``` 
+{
+  token,
+  code,
+  msg,
+}
+```
+
+test
+
+``` 
+
+```
+
+``` 
+
+```
+
+### POST /download_assignments
+
+> 收集作业
+
+``` 
+{
+  token,
+  work_code,// 作业码
+}
+```
+
+``` 
+{
+  token,
+  code,
+  msg,
+  download_url, // 作业下载链接
+}
+```
+
+test
+
+``` 
+
+```
+
+``` 
+
+```
+
+### POST /submit_work
+
+> 提交作业
+
+``` 
+{
+	token,
+	work_code,
+	file, // 提交的文件 <file>
+}
+```
+
+``` 
+{
+	token,
+	code,
+	msg
+}
+```
+
+test
+
+``` 
+
+```
+
+``` 
+
 ```

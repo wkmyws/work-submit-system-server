@@ -28,6 +28,16 @@ function params(token){
     return jwt.verify(token,config.jwt_pwd)
 }
 
+function isAdmin(token){
+    return params(token)["identify"]==0
+}
+
+function isStu(token){
+    return params(token)["identify"]==1
+}
+
 exports.set=addToken
 exports.get=getToken
 exports.params=params
+exports.isAdmin=isAdmin
+exports.isStu=isStu

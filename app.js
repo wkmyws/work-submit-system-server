@@ -7,6 +7,8 @@ const Token = require('./server/token')
 const sql = require('./server/sql')
 const cors = require('koa2-cors');
 const base62x = require('base62x')
+const fs=require('fs')
+const path=require('path')
 
 const app = new Koa()
 const router = new Router()
@@ -37,6 +39,8 @@ router.post('/login', async (ctx, next) => {
     }
 })
 
+
+// 发布作业
 router.post('/publish_assignments', async (ctx, next) => {
     let token = Token.get(ctx.request.body["token"])
     if (token == null) {
@@ -46,8 +50,7 @@ router.post('/publish_assignments', async (ctx, next) => {
         }
         return
     }
-    let identify=Token.params(token)["identify"]
-    if(identify!=0){
+    if (Token.isAdmin(token)==false) {
         // 不为admin
         return ctx.body = {
             code: 2,
@@ -62,14 +65,20 @@ router.post('/publish_assignments', async (ctx, next) => {
             msg: "作业名不为空"
         }
     }
-    let work_code = base62x.encode(work_name)
-    let res = await sql.addWork(work_code, work_desc)
+    let work_belong = Token.params(token)["usr"]
+    // work_code 由 JSON格式的 work_name + work_belong + work_time 生成
+    let work_code = { work_name, work_belong, work_time: new Date().getTime() }
+    work_code = JSON.stringify(work_code)
+    work_code = base62x.encode(work_code)
+
+    let res = await sql.addWork(work_code, work_name, work_belong, work_desc)
     if (res == false) {
         return ctx.body = {
             code: 22,
-            msg: "作业名不能重复"
+            msg: "作业码生成失败，请稍后重试"
         }
     }
+
 
     // 发布作业成功
     return ctx.body = {
@@ -78,6 +87,26 @@ router.post('/publish_assignments', async (ctx, next) => {
         work_code: work_code
     }
 
+})
+
+// 删除发布的作业
+router.post('/delete_assignments', async (ctx, next) => {
+    let token=Token.get(ctx.request.body["token"])
+    if(token==null){
+        return ctx.body={
+            code: 1,
+            msg: "token验证错误"
+        }
+    }
+    if(Token.isAdmin(token)==false){
+        return ctx.body={
+            code:2,
+            msg:"权限错误"
+        }
+    }
+    ctx.body={
+        code:-1
+    }
 })
 
 app.use(cors({

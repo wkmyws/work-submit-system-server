@@ -1,5 +1,7 @@
 const mysql = require('mysql')
 const config = require('./config')
+const fs = require('fs')
+const path = require('path')
 const connection = mysql.createConnection(config.sql)
 connection.connect()
 
@@ -26,12 +28,12 @@ async function login(usr, pwd) {
 
 }
 
-async function addWork(work_name, work_desc) {
+async function addWork(work_code, work_name, work_belong, work_desc) {
     let res = []
     try {
         res = await query(
-            "insert into work(work_name,work_desc) values(?,?);",
-            [work_name, work_desc]
+            "insert into work(work_code,work_name,work_belong,work_desc) values(?,?,?,?);",
+            [work_code, work_name, work_belong, work_desc]
         )
     } catch (err) {
         return false
@@ -40,8 +42,17 @@ async function addWork(work_name, work_desc) {
         // 已有此作业
         return false
     }
+
+    // 生成对应文件夹
+    fs.mkdirSync(path.resolve('./work', work_code))
+
     return true
 }
+
+async function delWork(){
+    return true
+}
+
 
 exports.login = login
 exports.addWork = addWork

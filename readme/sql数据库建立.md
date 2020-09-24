@@ -27,9 +27,11 @@ select * from login;
 ```
 // 作业表
 create table work(
-    work_name nvarchar(1000) primary key,
+    work_code nvarchar(1000) primary key,
+    work_name nvarchar(1000) not null,
+    work_belong nvarchar(50) references login(usr),
     work_desc nvarchar(3000)
 );
 
-insert into work("di yi");
+insert into work(work_code,work_name,work_belong) values("sdwW","first work","admin");
 ```
