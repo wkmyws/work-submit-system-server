@@ -1,0 +1,25 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+file:<input type="file" id="_f" /><br>
+work_code<input id="work_code" /><br>
+token<input id="token" /><br>
+<button onclick="submit()">submit</button>
+
+<script>
+    var axios_config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }
+
+    function submit() {
+        var param = new FormData()
+        param.append('file', _f.files[0])
+        param.append('work_code', work_code.value)
+        param.append('token', token.value)
+        axios.post('http://47.96.235.211:3000/submit_work', param, axios_config)
+            .then((res) => {
+                alert(JSON.stringify(res.data))
+            })
+            .catch((err) => {
+                alert(err)
+            })
+    }
+</script>

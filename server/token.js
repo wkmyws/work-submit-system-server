@@ -20,7 +20,6 @@ function getToken(token){
         if(e!="iat" && e!="exp")
             newRes[e]=res[e]
     }
-    console.log(newRes)
     return addToken(newRes)
 }
 

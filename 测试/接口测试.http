@@ -1,0 +1,55 @@
+### login 测试
+POST http://47.96.235.211:3000/login/ HTTP/1.1
+content-type: application/json
+
+{
+    "usr": "user",
+    "pwd": "000"
+}
+
+### login 测试
+POST http://47.96.235.211:3000/login/ HTTP/1.1
+content-type: application/json
+
+{
+    "usr": "admin",
+    "pwd": "123"
+}
+
+
+### 发布作业测试
+POST http://47.96.235.211:3000/publish_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEwOTkzNjEsImV4cCI6MTYwMTEwMTE2MX0.dKf3KGJgycj331Tap-MhgukvXKQElwGxnlnVZiXEziE",
+    "work_name": "第一次作业",
+    "work_desc": "作业具体描述，巴拉巴拉巴拉"
+}
+
+### 删除发布的作业测试
+POST http://47.96.235.211:3000/delete_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDExMDA3NDMsImV4cCI6MTYwMTEwMjU0M30.ZMoRT-I5scCWJaBqZIr4Cy2GResn5tx2e8GyKP7d3K0",
+    "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nC3avCpWmEJOsV1"
+}
+
+### 上传文件
+POST http://47.96.235.211:3000/submit_work/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDExMDA3NDMsImV4cCI6MTYwMTEwMjU0M30.ZMoRT-I5scCWJaBqZIr4Cy2GResn5tx2e8GyKP7d3K0",
+    "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nC3avCpWmEJOsV1"
+}
+
+### 下载文件
+POST http://47.96.235.211:3000/download_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDExMDUzNjksImV4cCI6MTYwMTEwNzE2OX0.jKTCTOd4o2dF6iCYkne-tc4yXKFSvtVw5G2Zq2ijCSA",
+    "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCJ0mDpWnEJOtV1"
+}

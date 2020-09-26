@@ -2,13 +2,15 @@ const Koa = require('koa');
 const config = require('./server/config')
 const Router = require('koa-router')
 const bodyparser = require('koa-bodyparser');
+const koaBody = require('koa-body');
 const jwt = require('koa-jwt')
 const Token = require('./server/token')
 const sql = require('./server/sql')
 const cors = require('koa2-cors');
-const base62x = require('base62x')
-const fs=require('fs')
-const path=require('path')
+const workCode = require('./server/work_code')
+const fs = require('fs')
+const path = require('path')
+const myZip = require('./server/zip')
 
 const app = new Koa()
 const router = new Router()
@@ -50,7 +52,7 @@ router.post('/publish_assignments', async (ctx, next) => {
         }
         return
     }
-    if (Token.isAdmin(token)==false) {
+    if (Token.isAdmin(token) == false) {
         // 不为admin
         return ctx.body = {
             code: 2,
@@ -66,11 +68,7 @@ router.post('/publish_assignments', async (ctx, next) => {
         }
     }
     let work_belong = Token.params(token)["usr"]
-    // work_code 由 JSON格式的 work_name + work_belong + work_time 生成
-    let work_code = { work_name, work_belong, work_time: new Date().getTime() }
-    work_code = JSON.stringify(work_code)
-    work_code = base62x.encode(work_code)
-
+    let work_code = workCode.encode(work_name, work_belong)
     let res = await sql.addWork(work_code, work_name, work_belong, work_desc)
     if (res == false) {
         return ctx.body = {
@@ -78,34 +76,110 @@ router.post('/publish_assignments', async (ctx, next) => {
             msg: "作业码生成失败，请稍后重试"
         }
     }
-
-
     // 发布作业成功
     return ctx.body = {
         code: 0,
         token: token,
         work_code: work_code
     }
-
 })
 
 // 删除发布的作业
 router.post('/delete_assignments', async (ctx, next) => {
-    let token=Token.get(ctx.request.body["token"])
-    if(token==null){
-        return ctx.body={
+    let token = Token.get(ctx.request.body["token"])
+    let work_code = ctx.request.body["work_code"]
+    if (work_code == null) {
+        return ctx.body = {
+            code: 23,
+            msg: "作业码解析失败"
+        }
+    }
+    if (token == null) {
+        return ctx.body = {
             code: 1,
             msg: "token验证错误"
         }
     }
-    if(Token.isAdmin(token)==false){
-        return ctx.body={
-            code:2,
-            msg:"权限错误"
+    if (Token.isAdmin(token) == false) {
+        return ctx.body = {
+            code: 2,
+            msg: "权限错误"
         }
     }
-    ctx.body={
-        code:-1
+    if (await sql.delWork(work_code) == true) {
+        return ctx.body = {
+            code: 0,
+            token: token
+        }
+    } else {
+        return ctx.body = {
+            code: 3,
+            msg: "不存在此作业码（未创建或已被删除）",
+            token: token
+        }
+    }
+})
+
+
+// 上传作业
+router.post('/submit_work', async (ctx, next) => {
+    let token = Token.get(ctx.request.body["token"])
+    let work_code = ctx.request.body["work_code"]
+    if (token == null) {
+        return ctx.body = {
+            code: 1,
+            msg: "token验证错误"
+        }
+    }
+    if (work_code == null || (await sql.haveWork(work_code)) == false) {
+        return ctx.body = {
+            code: 23,
+            msg: "作业码不存在",
+            token: token
+        }
+    }
+    let usrInfo = Token.params(token)
+    const file = ctx.request.files.file
+    let reader = fs.createReadStream(file.path)
+    let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
+    let upStream = fs.createWriteStream(filePath)
+    reader.pipe(upStream)
+    return ctx.body = {
+        code: 0,
+        msg: "上传成功！",
+        token: token
+    }
+})
+
+router.post('/download_assignments', async (ctx, next) => {
+    let token = Token.get(ctx.request.body["token"])
+    let work_code = ctx.request.body["work_code"]
+    if (token == null) {
+        return ctx.body = {
+            code: 1,
+            msg: "token验证错误"
+        }
+    }
+    if (work_code == null || (await sql.haveWork(work_code)) == false) {
+        return ctx.body = {
+            code: 23,
+            msg: "作业码不存在",
+            token: token
+        }
+    }
+    let usrInfo = Token.params(token)
+    if ((await sql.canDownload(work_code, usrInfo["identify"])) == false) {
+        return ctx.body = {
+            code: 2,
+            msg: "没有权限获取文件下载地址",
+            token: token
+        }
+    }
+    let download_url = myZip.zipAndDownload(work_code)()
+    return ctx.body = {
+        code: 0,
+        token: token,
+        download_url: download_url
     }
 })
 
@@ -114,6 +188,13 @@ app.use(cors({
     origin: ctx => ctx.header.origin, // web前端服务器地址，注意这里不能用*
 }))
 app.use(jwt({ secret: config.jwt_pwd, passthrough: true }).unless({ path: ["/login"] }));
+app.use(koaBody({
+    multipart: true,
+    formidable: {
+        maxFileSize: 50 * 100 * 1024 * 1024    // 设置上传文件大小最大限制，默认50M
+    }
+}));
 app.use(bodyparser());
+app.use(require('koa-static')(path.join('./public')))
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(config.port);
