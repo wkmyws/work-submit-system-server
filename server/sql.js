@@ -63,11 +63,23 @@ async function canDownload(work_code, work_belong) {
     return res.length != 0
 }
 
+async function getWorkListByWorkBelong(work_belong) {
+    let res = await query("select work_code,work_name from work where work_belong=?", [work_belong])
+    return res
+}
+
+async function getWorkDetailsByWorkCode(work_code) {
+    let res = await query("select * from work where work_code=? limit 1;", [work_code])
+    return res.length == 0 ? null : res[0]
+}
+
 exports.login = login
 exports.addWork = addWork
 exports.delWork = delWork
 exports.haveWork = haveWork
 exports.canDownload = canDownload
+exports.getWorkListByWorkBelong = getWorkListByWorkBelong
+exports.getWorkDetailsByWorkCode = getWorkDetailsByWorkCode
 
 async function test() {
 
