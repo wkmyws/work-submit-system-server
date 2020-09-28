@@ -200,7 +200,7 @@ app.use(koaBody({
     }
 }));
 app.use(bodyparser());
-app.use(Token.checkTokenInHttp([{url:"/login/",method:"POST"}]))
+app.use(Token.checkTokenInHttp([{url:"/login",method:"POST"}]))
 app.use(require('koa-static')(path.join('./public')))
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(config.port);
