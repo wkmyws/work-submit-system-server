@@ -30,6 +30,14 @@ async function login(usr, pwd) {
 
 }
 
+async function isAdminByUsr(usr) {
+    let res = await query(
+        "select identify from login where usr=?;",
+        [usr]
+    )
+    return res.length == 0 ? false : res[0]["identify"] == 0
+}
+
 async function addWork(work_code, work_name, work_belong, work_desc) {
     let res = []
     try {
@@ -73,6 +81,14 @@ async function getWorkDetailsByWorkCode(work_code) {
     return res.length == 0 ? null : res[0]
 }
 
+async function resetPassword(usr, newPwd) {
+    let res = await query(
+        "update login set pwd=? where usr=?;",
+        [newPwd, usr]
+    )
+    return res["message"]
+}
+
 exports.login = login
 exports.addWork = addWork
 exports.delWork = delWork
@@ -80,6 +96,8 @@ exports.haveWork = haveWork
 exports.canDownload = canDownload
 exports.getWorkListByWorkBelong = getWorkListByWorkBelong
 exports.getWorkDetailsByWorkCode = getWorkDetailsByWorkCode
+exports.isAdminByUsr = isAdminByUsr
+exports.resetPassword = resetPassword
 
 async function test() {
 

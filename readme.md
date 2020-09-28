@@ -156,15 +156,7 @@ Connection: close
 }
 ```
 
-test
 
-``` 
-
-```
-
-``` 
-
-```
 
 ### POST /download_assignments
 
@@ -186,15 +178,7 @@ test
 }
 ```
 
-test
 
-``` 
-
-```
-
-``` 
-
-```
 
 ### POST /submit_work
 
@@ -216,19 +200,11 @@ test
 }
 ```
 
-test
-
-``` 
-
-```
-
-``` 
-
-```
 
 
 
-### ~~POST /get_published_assignments_list~~
+
+### POST /get_published_assignments_list
 
 > 获取当前用户发布的所有作业（作业码+作业名）
 
@@ -249,7 +225,7 @@ test
 
 
 
-### ~~POST /get_assignments_detail~~
+### POST /get_assignments_detail
 
 > 获取作业码对应的详细作业信息
 
@@ -271,3 +247,27 @@ test
 }
 ```
 
+
+### POST /reset_password
+
+> 修改密码
+> 
+> admin可以修改自己和任意学生的密码
+>
+> 学生只能修改自己的密码
+
+```
+{
+	token,
+	usr, // 要修改密码的账户名,省缺默认为修改当前账户密码
+  newPwd, //新密码
+}
+```
+
+```
+{
+	token,
+	code,
+	msg
+}
+```

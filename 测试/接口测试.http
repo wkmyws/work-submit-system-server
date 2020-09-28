@@ -22,7 +22,7 @@ POST http://47.96.235.211:3000/publish_assignments/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEyOTQ0OTEsImV4cCI6MTYwMTI5NjI5MX0.o3CzIpHVivndDacvmhw5w203dHNXsAznRemp5VTwVwE",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEzMDY1ODQsImV4cCI6MTYwMTMwODM4NH0.3xMAZpzyuXg8mYRkKbsfzJ1H_cG7XWfzUSIQPz_VzOY",
     "work_name": "第二次作业",
     "work_desc": "作业具体描述，巴拉巴拉巴拉"
 }
@@ -60,7 +60,7 @@ POST http://47.96.235.211:3000/get_published_assignments_list/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEyOTQ1MjUsImV4cCI6MTYwMTI5NjMyNX0.bZvzkqwJpg0N1vHqYn-cwCMJADrFzMdN1UbmKqwJ61Q",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEzMDY1ODQsImV4cCI6MTYwMTMwODM4NH0.3xMAZpzyuXg8mYRkKbsfzJ1H_cG7XWfzUSIQPz_VzOY",
     "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCJ0mDpWnEJOtV1"
 }
 
@@ -70,6 +70,15 @@ POST http://47.96.235.211:3000/get_assignments_detail/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEyOTQ1OTQsImV4cCI6MTYwMTI5NjM5NH0.ZtINrD1NpWy_UNWnO64RIySqi2ZuUXalnN_kGG0OVjo",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMTMwNjE2NCwiZXhwIjoxNjAxMzA3OTY0fQ.nGE2NF9oyqV8pQVbXDAQBNKQZl6X5S2gptM5GWd9q2c",
     "work_code": "Uo9tRt9hNsvXRMKYEYBdhApakepchA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCZaqDJ4uE34nV1"
+}
+
+### 修改密码
+POST http://47.96.235.211:3000/reset_password/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMTMwODkyMywiZXhwIjoxNjAxMzEwNzIzfQ.-V7LrcpKZGiAeZu_tp_pUOBxBtYfDhcw_5qRyb9TUtc",
+    "newPwd": "000"
 }

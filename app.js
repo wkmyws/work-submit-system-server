@@ -158,18 +158,18 @@ router.post('/download_assignments', async (ctx, next) => {
 
 // 获取已发布的作业列表
 router.post('/get_published_assignments_list', async (ctx, next) => {
-    if(Token.isAdmin(ctx.myToken)==false){
-        return ctx.body={
+    if (Token.isAdmin(ctx.myToken) == false) {
+        return ctx.body = {
             code: 2,
             msg: "权限不足",
             token: ctx.myToken,
             work_list: []
         }
     }
-    let work_belong=Token.params(ctx.myToken)["usr"]
-    let res=await sql.getWorkListByWorkBelong(work_belong)
-    ctx.body={
-        code:0,
+    let work_belong = Token.params(ctx.myToken)["usr"]
+    let res = await sql.getWorkListByWorkBelong(work_belong)
+    ctx.body = {
+        code: 0,
         token: ctx.myToken,
         work_list: res
     }
@@ -178,14 +178,42 @@ router.post('/get_published_assignments_list', async (ctx, next) => {
 // 获取详细作业
 router.post('/get_assignments_detail', async (ctx, next) => {
     let work_code = ctx.request.body["work_code"]
-    let res=await sql.getWorkDetailsByWorkCode(work_code)
-    ctx.body={
-        code:0,
-        token:ctx.myToken,
+    let res = await sql.getWorkDetailsByWorkCode(work_code)
+    ctx.body = {
+        code: 0,
+        token: ctx.myToken,
         work_name: res["work_name"],
         work_belong: res["work_belong"],
         work_desc: res["work_desc"]
     }
+})
+
+// 修改密码
+router.post('/reset_password', async (ctx, next) => {
+    let newPwd = ctx.request.body["newPwd"]
+    let usrInfo = Token.params(ctx.myToken)
+    let usr = ctx.request.body["usr"] || usrInfo["usr"]
+    let msg = ""
+    if (usrInfo["usr"] == usr) {
+        // 当前用户修改密码
+        msg = await sql.resetPassword(usr, newPwd)
+    } else if (sql.isAdminByUsr(usr) == false
+        && token.isAdmin(ctx.myToken) == true) {
+        // 管理员修改非管理员密码
+        msg = await sql.resetPassword(usr, newPwd)
+    } else {
+        return ctx.body = {
+            token: ctx.myToken,
+            code: 2,
+            msg: "当前权限组无法修改目标用户密码"
+        }
+    }
+    return ctx.body = {
+        token: ctx.myToken,
+        code: 0,
+        msg: msg
+    }
+
 })
 
 app.use(cors({
@@ -200,7 +228,7 @@ app.use(koaBody({
     }
 }));
 app.use(bodyparser());
-app.use(Token.checkTokenInHttp([{url:"/login",method:"POST"}]))
+app.use(Token.checkTokenInHttp([{ url: "/login", method: "POST" }]))
 app.use(require('koa-static')(path.join('./public')))
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(config.port);
