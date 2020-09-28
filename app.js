@@ -10,7 +10,7 @@ const cors = require('koa2-cors');
 const workCode = require('./server/work_code')
 const fs = require('fs')
 const path = require('path')
-const myZip = require('./server/zip')
+const myZip = require('./server/zip');
 
 const app = new Koa()
 const router = new Router()
@@ -44,15 +44,7 @@ router.post('/login', async (ctx, next) => {
 
 // 发布作业
 router.post('/publish_assignments', async (ctx, next) => {
-    let token = Token.get(ctx.request.body["token"])
-    if (token == null) {
-        ctx.body = {
-            code: 1,
-            msg: "token验证错误"
-        }
-        return
-    }
-    if (Token.isAdmin(token) == false) {
+    if (Token.isAdmin(ctx.myToken) == false) {
         // 不为admin
         return ctx.body = {
             code: 2,
@@ -67,7 +59,7 @@ router.post('/publish_assignments', async (ctx, next) => {
             msg: "作业名不为空"
         }
     }
-    let work_belong = Token.params(token)["usr"]
+    let work_belong = Token.params(ctx.myToken)["usr"]
     let work_code = workCode.encode(work_name, work_belong)
     let res = await sql.addWork(work_code, work_name, work_belong, work_desc)
     if (res == false) {
@@ -79,14 +71,14 @@ router.post('/publish_assignments', async (ctx, next) => {
     // 发布作业成功
     return ctx.body = {
         code: 0,
-        token: token,
+        token: ctx.myToken,
         work_code: work_code
     }
 })
 
 // 删除发布的作业
 router.post('/delete_assignments', async (ctx, next) => {
-    let token = Token.get(ctx.request.body["token"])
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     let work_code = ctx.request.body["work_code"]
     if (work_code == null) {
         return ctx.body = {
@@ -94,28 +86,22 @@ router.post('/delete_assignments', async (ctx, next) => {
             msg: "作业码解析失败"
         }
     }
-    if (token == null) {
-        return ctx.body = {
-            code: 1,
-            msg: "token验证错误"
-        }
-    }
-    if (Token.isAdmin(token) == false) {
+    if (Token.isAdmin(ctx.myToken) == false) {
         return ctx.body = {
             code: 2,
-            msg: "权限错误"
+            msg: "你所在权限组无法执行此操作"
         }
     }
     if (await sql.delWork(work_code) == true) {
         return ctx.body = {
             code: 0,
-            token: token
+            token: ctx.myToken
         }
     } else {
         return ctx.body = {
             code: 3,
             msg: "不存在此作业码（未创建或已被删除）",
-            token: token
+            token: ctx.myToken
         }
     }
 })
@@ -123,22 +109,15 @@ router.post('/delete_assignments', async (ctx, next) => {
 
 // 上传作业
 router.post('/submit_work', async (ctx, next) => {
-    let token = Token.get(ctx.request.body["token"])
     let work_code = ctx.request.body["work_code"]
-    if (token == null) {
-        return ctx.body = {
-            code: 1,
-            msg: "token验证错误"
-        }
-    }
     if (work_code == null || (await sql.haveWork(work_code)) == false) {
         return ctx.body = {
             code: 23,
             msg: "作业码不存在",
-            token: token
+            token: ctx.myToken
         }
     }
-    let usrInfo = Token.params(token)
+    let usrInfo = Token.params(ctx.myToken)
     const file = ctx.request.files.file
     let reader = fs.createReadStream(file.path)
     let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
@@ -147,39 +126,65 @@ router.post('/submit_work', async (ctx, next) => {
     return ctx.body = {
         code: 0,
         msg: "上传成功！",
-        token: token
+        token: ctx.myToken
     }
 })
 
+// 下载作业
 router.post('/download_assignments', async (ctx, next) => {
-    let token = Token.get(ctx.request.body["token"])
     let work_code = ctx.request.body["work_code"]
-    if (token == null) {
-        return ctx.body = {
-            code: 1,
-            msg: "token验证错误"
-        }
-    }
     if (work_code == null || (await sql.haveWork(work_code)) == false) {
         return ctx.body = {
             code: 23,
             msg: "作业码不存在",
-            token: token
+            token: ctx.myToken
         }
     }
-    let usrInfo = Token.params(token)
+    let usrInfo = Token.params(ctx.myToken)
     if ((await sql.canDownload(work_code, usrInfo["identify"])) == false) {
         return ctx.body = {
             code: 2,
             msg: "没有权限获取文件下载地址",
-            token: token
+            token: ctx.myToken
         }
     }
     let download_url = myZip.zipAndDownload(work_code)()
     return ctx.body = {
         code: 0,
-        token: token,
+        token: ctx.myToken,
         download_url: download_url
+    }
+})
+
+// 获取已发布的作业列表
+router.post('/get_published_assignments_list', async (ctx, next) => {
+    if(Token.isAdmin(ctx.myToken)==false){
+        return ctx.body={
+            code: 2,
+            msg: "权限不足",
+            token: ctx.myToken,
+            work_list: []
+        }
+    }
+    let work_belong=Token.params(ctx.myToken)["usr"]
+    let res=await sql.getWorkListByWorkBelong(work_belong)
+    ctx.body={
+        code:0,
+        token: ctx.myToken,
+        work_list: res
+    }
+})
+
+// 获取详细作业
+router.post('/get_assignments_detail', async (ctx, next) => {
+    let work_code = ctx.request.body["work_code"]
+    let res=await sql.getWorkDetailsByWorkCode(work_code)
+    ctx.body={
+        code:0,
+        token:ctx.myToken,
+        work_name: res["work_name"],
+        work_belong: res["work_belong"],
+        work_desc: res["work_desc"]
     }
 })
 
@@ -195,6 +200,7 @@ app.use(koaBody({
     }
 }));
 app.use(bodyparser());
+app.use(Token.checkTokenInHttp([{url:"/login/",method:"POST"}]))
 app.use(require('koa-static')(path.join('./public')))
 app.use(router.routes()).use(router.allowedMethods());
 app.listen(config.port);

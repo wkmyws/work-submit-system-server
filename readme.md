@@ -10,7 +10,15 @@
 
 * /work
 
-  提交文件地址
+  存放上传的作业的文件夹地址
+
+* /public
+
+  静态资源文件夹
+
+  + tmp
+
+    临时下载文件夹
 
 * app.js
 
@@ -30,7 +38,7 @@
 > + test
 > + 【测试参数】
 > + 【测试的返回参数】
->  
+> 
 > （采用 `rest client` 编写的测试语法）
 
 ### POST /login
@@ -217,3 +225,49 @@ test
 ``` 
 
 ```
+
+
+
+### ~~POST /get_published_assignments_list~~
+
+> 获取当前用户发布的所有作业（作业码+作业名）
+
+```json
+{
+	token,
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	work_list, // 作业列表（数组）：[{work_code,work_name}]
+}
+```
+
+
+
+### ~~POST /get_assignments_detail~~
+
+> 获取作业码对应的详细作业信息
+
+```
+{
+	token,
+	work_code
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	work_name,
+	work_belong,
+	work_desc
+}
+```
+

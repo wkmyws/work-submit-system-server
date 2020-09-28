@@ -1,42 +1,75 @@
-const jwt=require('jsonwebtoken')
-const config=require('./config')
+const jwt = require('jsonwebtoken')
+const config = require('./config')
 
-function addToken(json_data){
-    return jwt.sign(json_data,config.jwt_pwd,{expiresIn:config.jwt_passTime})
+function addToken(json_data) {
+    return jwt.sign(json_data, config.jwt_pwd, { expiresIn: config.jwt_passTime })
 }
 
 
-function getToken(token){
+function getToken(token) {
     // 验证token后刷新token
-    let res=null
-    try{
-        res=jwt.verify(token,config.jwt_pwd)
-        if(res["iat"]-0 > res["exp"]-0)return null // 过期
-    }catch(err){
+    let res = null
+    try {
+        res = jwt.verify(token, config.jwt_pwd)
+        if (res["iat"] - 0 > res["exp"] - 0) return null // 过期
+    } catch (err) {
         return null // 伪造的token
     }
-    newRes={}
-    for(let e in res){
-        if(e!="iat" && e!="exp")
-            newRes[e]=res[e]
+    newRes = {}
+    for (let e in res) {
+        if (e != "iat" && e != "exp")
+            newRes[e] = res[e]
     }
     return addToken(newRes)
 }
 
-function params(token){
-    return jwt.verify(token,config.jwt_pwd)
+function params(token) {
+    return jwt.verify(token, config.jwt_pwd)
 }
 
-function isAdmin(token){
-    return params(token)["identify"]==0
+function isAdmin(token) {
+    return params(token)["identify"] == 0
 }
 
-function isStu(token){
-    return params(token)["identify"]==1
+function isStu(token) {
+    return params(token)["identify"] == 1
 }
 
-exports.set=addToken
-exports.get=getToken
-exports.params=params
-exports.isAdmin=isAdmin
-exports.isStu=isStu
+function checkTokenInHttp(whiteList) {
+    // whiteList = [ {url,method} , {url} ]
+    // set ctx.myToken
+    return async (ctx, next) => {
+        // 放行白名单
+        for (let i = 0; i < whiteList.length; i++) {
+            if (ctx.request.path == whiteList[i]["url"]) {
+                if (whiteList[i]["method"]) {// 额外设置了方法
+                    if (whiteList[i]["method"] == ctx.request.method) {
+                        return await next();
+                    } else {
+                        break
+                    }
+                } else {
+                    return await next()
+                }
+            }
+        }
+
+        let token = getToken(ctx.request.body["token"])
+        if (token == null) {
+            return ctx.body = {
+                code: 1,
+                msg: "token验证错误"
+            }
+        } else {
+            ctx.myToken = token
+            await next()
+        }
+    }
+}
+
+exports.set = addToken
+exports.get = getToken
+exports.params = params
+exports.isAdmin = isAdmin
+exports.isStu = isStu
+exports.checkTokenInHttp = checkTokenInHttp
