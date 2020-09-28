@@ -66,7 +66,7 @@ content-type: application/json
 
 
 ### 获取详细作业信息
-POST http://47.96.235.211:300/get_assignments_detail/ HTTP/1.1
+POST http://47.96.235.211:3000/get_assignments_detail/ HTTP/1.1
 content-type: application/json
 
 {
