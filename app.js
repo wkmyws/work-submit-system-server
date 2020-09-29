@@ -11,6 +11,7 @@ const workCode = require('./server/work_code')
 const fs = require('fs')
 const path = require('path')
 const myZip = require('./server/zip');
+const fsm = require('./server/fs_more')
 
 const app = new Koa()
 const router = new Router()
@@ -123,7 +124,14 @@ router.post('/submit_work', async (ctx, next) => {
     let usrInfo = Token.params(ctx.myToken)
     const file = ctx.request.files.file
     let reader = fs.createReadStream(file.path)
-    let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
+    //let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
+    // 覆盖提交 会先删除当前用户之前创建的文件夹及子文件
+    if (fs.existsSync(path.join('./', 'work', work_code, usrInfo["usr"]))) {
+        fsm.rm_rf(path.join('./', 'work', work_code, usrInfo["usr"]))
+    }
+    // 重新创建用户文件夹
+    fs.mkdirSync(path.join('./', 'work', work_code, usrInfo["usr"]))
+    let filePath = path.join('./', 'work', work_code, usrInfo["usr"], file.name)
     let upStream = fs.createWriteStream(filePath)
     reader.pipe(upStream)
     return ctx.body = {
