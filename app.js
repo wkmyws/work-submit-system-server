@@ -78,7 +78,7 @@ router.post('/publish_assignments', async (ctx, next) => {
 
 // 删除发布的作业
 router.post('/delete_assignments', async (ctx, next) => {
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     let work_code = ctx.request.body["work_code"]
     if (work_code == null) {
         return ctx.body = {
@@ -86,10 +86,13 @@ router.post('/delete_assignments', async (ctx, next) => {
             msg: "作业码解析失败"
         }
     }
-    if (Token.isAdmin(ctx.myToken) == false) {
+
+    let work_code_belong = workCode.decode(work_code)["work_belong"]
+    let usr = Token.params(ctx.myToken)["usr"]
+    if (work_code_belong != usr) {
         return ctx.body = {
             code: 2,
-            msg: "你所在权限组无法执行此操作"
+            msg: "只有此作业发布者才能删除作业"
         }
     }
     if (await sql.delWork(work_code) == true) {
