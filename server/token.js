@@ -36,19 +36,22 @@ function isStu(token) {
 }
 
 function checkTokenInHttp(whiteList) {
-    // whiteList = [ {url,method} , {url} ]
+    // whiteList = [ {url,method?,reg?} , ]
     // set ctx.myToken
 
     return async (ctx, next) => {
-        // 放行白名单
+        // 自定义放行白名单
         for (let i = 0; i < whiteList.length; i++) {
             let p = ctx.request.path
             // 删除可能存在的最后的 /
-            if (p.slice(-1) == "/") p = p.slice(0, -1)
+            //if (p.slice(-1) == "/") p = p.slice(0, -1)
             let w_url = whiteList[i]["url"]
             // 删除可能存在的最后的 /
-            if (w_url.slice(-1) == "/") w_url = w_url.slice(0, -1)
-            if (p == w_url) {
+            //if (w_url.slice(-1) == "/") w_url = w_url.slice(0, -1)
+            let match_res = false
+            if (whiteList[i]["reg"]) match_res = new RegExp(w_url).test(p)
+            else match_res = w_url == p
+            if (match_res) {
                 if (whiteList[i]["method"]) {// 额外设置了方法
                     if (whiteList[i]["method"] == ctx.request.method) {
                         return await next();
