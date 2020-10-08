@@ -225,7 +225,7 @@ Connection: close
 
 
 
-### POST /get_assignments_detail
+### !!POST /get_assignments_detail
 
 > 获取作业码对应的详细作业信息
 
@@ -243,7 +243,8 @@ Connection: close
 	msg,
 	work_name,
 	work_belong,
-	work_desc
+	work_desc,
+	class,
 }
 ```
 
@@ -271,3 +272,159 @@ Connection: close
 	msg
 }
 ```
+
+
+
+### !!POST /get_class_list
+
+> 获取 学生/老师 所在班级 的数组
+
+```
+{
+	token,
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	class_list, // class_list 为字符串形式，通过 JSON.parse(class_list)转为数组形式
+}
+```
+
+
+
+### !!POST /get_assignments_list_by_class
+
+> 获取当前用户所在当前班级的所有作业的数组，按时间顺序排序
+
+```
+{
+	token,
+	class,
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	work_list // 作业列表（数组）：[{work_code,work_name}]
+}
+```
+
+
+
+### !!POST /preview_assignment
+
+> 预览作业
+>
+> 学生仅能预览自己的作业
+>
+> 老师可以预览当前班级任意学生的作业
+
+```
+{
+	token, // 身份鉴别
+	work_code, // 作业码
+	usr, // 学生可不用填写这个参数，老师必须填写这个参数用以指定预览哪个学生的作业
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	html 
+}
+/* 通过
+	let previewPage=window.open("");
+	previewPage.document.write(html);
+	previewPage.focus();
+	来打开预览作业页面
+*/
+```
+
+
+
+### !!POST /get_guy_info
+
+> 获取学生详细信息
+>
+> 学生仅可获取自己信息
+>
+> 教师可获取任意学生信息
+
+```
+{
+	token,
+	usr, // 学生不填，教师必填
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	name,
+	class_list
+}
+```
+
+
+
+### !!POST /grade_assignments
+
+> 打分
+>
+> 老师通过作业码和学生账户名给学生打分
+
+```
+{
+	token,
+	work_code,
+	usr,
+	score
+}
+```
+
+```
+{
+	token,
+	code,
+	msg
+}
+```
+
+
+
+### !!POST /get_score
+
+> 获取分数
+>
+> 老师可获取当前班级任意学生指定作业码的分数
+>
+> 学生仅可查看自己的
+
+```
+{
+	token,
+	work_code,
+	usr
+}
+```
+
+```
+{
+	token,
+	code,
+	msg,
+	score
+}
+```
+

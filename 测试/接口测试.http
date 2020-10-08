@@ -28,12 +28,12 @@ content-type: application/json
 }
 
 ### 删除发布的作业测试
-POST http://47.96.235.211:3000/delete_assignments/ HTTP/1.1
+POST http://47.96.235.211:3000/delete_assignments HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEzNzk4MjQsImV4cCI6MTYwMTM4MTYyNH0.P47A5lLifJVP7FPQ1RKHZxNlGzHJG2DmrDAbcXjJ7Lg",
-    "work_code": "Uo9tRt9hNsvXRMKYEY8n8YmYTsx1oQrx1YPMnlRcSYEY9XP6rfRY8i8dTlScjVT6bjPI8wCJOmCJCmDpOmCpGqDdD"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEzOTExMzcsImV4cCI6MTYwMTM5MjkzN30.aa6seHTTKRy-GmSZrTuomZt-XN28DFqw0MRnq4ALQCU",
+    "work_code": "Uo9tRt9hNsvXRMKYEY8n8YmYTsx1oQrx1YPMnlRcSYEY9XP6rfRY8i8dTlScjVT6bjPI8wCJOmCJCmE3GoE38pDtD"
 }
 
 ### 上传文件
@@ -60,7 +60,7 @@ POST http://47.96.235.211:3000/get_published_assignments_list/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDEzMDY1ODQsImV4cCI6MTYwMTMwODM4NH0.3xMAZpzyuXg8mYRkKbsfzJ1H_cG7XWfzUSIQPz_VzOY",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDE1OTY4NDcsImV4cCI6MTYwMTU5ODY0N30.yup-3XgrJPeGRhXLkgpWmCXCv0lLHs_tK1WXFXp3OQM",
     "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCJ0mDpWnEJOtV1"
 }
 

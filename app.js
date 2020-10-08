@@ -12,7 +12,6 @@ const fs = require('fs')
 const path = require('path')
 const myZip = require('./server/zip');
 const fsm = require('./server/fs_more')
-
 const app = new Koa()
 const router = new Router()
 
@@ -227,10 +226,6 @@ router.post('/reset_password', async (ctx, next) => {
 
 })
 
-// 错误路由
-// router.get('*',async(ctx,next)=>{
-//     ctx.body="走丢了。。。"
-// })
 
 app.use(cors({
     credentials: true,//默认情况下，Cookie不包括在CORS请求之中。设为true，即表示服务器许可Cookie可以包含在请求中
@@ -247,7 +242,6 @@ app.use(bodyparser());
 app.use(Token.checkTokenInHttp([
     { url: "^/login/?$", method: "POST", reg: true },
     { url: "^/tmp(/.*)?$", reg: true },
-    { url: "^/root(/.*)?$", reg: true }
 ]))
 app.use(require('koa-static')(path.join('./public')))
 app.use(router.routes()).use(router.allowedMethods());

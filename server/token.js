@@ -72,6 +72,7 @@ function checkTokenInHttp(whiteList) {
             }
         } else {
             ctx.myToken = token
+            //ctx.session.myToken = token
             await next()
         }
     }
