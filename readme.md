@@ -38,21 +38,21 @@
 > + test
 > + 【测试参数】
 > + 【测试的返回参数】
-> 
+>  
 > （采用 `rest client` 编写的测试语法）
 
 ### POST /login
 
 > 用户身份验证
 
-``` 
+``` json
 {
     usr,
     pwd,
 }
 ```
 
-``` 
+``` json
 {
     code,// 状态码
     msg, // 状态信息
@@ -61,49 +61,21 @@
 }
 ```
 
-test
-
-``` 
-POST http://47.96.235.211:3000/login/ HTTP/1.1
-content-type: application/json
-
-{
-    "usr": "user",
-    "pwd": "000"
-}
-```
-
-``` 
-HTTP/1.1 200 OK
-my-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMDc5MDE3M30.olO1UKaSp89egZF6tRDhQTuP9yi2166JlsjqwBsrFO4
-Content-Type: application/json; charset=utf-8
-Content-Length: 199
-Date: Tue, 22 Sep 2020 15:56:13 GMT
-Connection: close
-
-{
-  "code": 0,
-  "msg": "",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMDc5MDE3M30.olO1UKaSp89egZF6tRDhQTuP9yi2166JlsjqwBsrFO4",
-  "identify": 1
-}
-```
-
 ### POST /publish_assignments
 
 > 发布作业
 
-``` 
+``` json
 {
     token, // 登陆后获取的token
     work_name, // 作业名称
     work_desc, // 作业说明
-	work_deadline, // 截止时间 格式：时间戳
-	work_class, // 作业所属班级
+    work_deadline, // 截止时间 格式：时间戳
+    work_class, // 作业所属班级
 }
 ```
 
-``` 
+``` json
 {
     code, // 状态码
     msg, //状态信息
@@ -112,45 +84,18 @@ Connection: close
 }
 ```
 
-test
-
-``` 
-POST http://47.96.235.211:3000/publish_assignments/ HTTP/1.1
-content-type: application/json
-
-{
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDA4NzYwMTQsImV4cCI6MTYwMDg3NzgxNH0.hosTJDX_zgoLwzfTYZUmt15KiHYQiD_MslStfGfQ0HY",
-    "work_name": "测试1238",
-    "work_desc": "描述"
-}
-```
-
-``` 
-HTTP/1.1 200 OK
-Vary: Origin
-Content-Type: application/json; charset=utf-8
-Content-Length: 41
-Date: Wed, 23 Sep 2020 15:49:16 GMT
-Connection: close
-
-{
-  "code": 22,
-  "msg": "作业名不能重复"
-}
-```
-
 ### POST /delete_assignments
 
 > 删除作业
 
-``` 
+``` json
 {
   token,
   work_code, // 作业码
 }
 ```
 
-``` 
+``` json
 {
   token,
   code,
@@ -158,20 +103,18 @@ Connection: close
 }
 ```
 
-
-
 ### POST /download_assignments
 
 > 收集作业
 
-``` 
+``` json
 {
   token,
   work_code,// 作业码
 }
 ```
 
-``` 
+``` json
 {
   token,
   code,
@@ -180,86 +123,77 @@ Connection: close
 }
 ```
 
-
-
 ### POST /submit_work
 
 > 提交作业
 
-``` 
+``` json
 {
-	token,
-	work_code,
-	file, // 提交的文件 <file>
+    token,
+    work_code,
+    file, // 提交的文件 <file>
 }
 ```
 
-``` 
+``` json
 {
-	token,
-	code,
-	msg
+    token,
+    code,
+    msg
 }
 ```
-
-
-
-
 
 ### POST /get_published_assignments_list
 
 > 获取当前用户发布的所有作业（作业码+作业名）
 
-```json
+``` json
 {
-	token,
+    token,
 }
 ```
 
-```
+``` json
 {
-	token,
-	code,
-	msg,
-	work_list, // 作业列表（数组）：[{work_code,work_name}]
+    token,
+    code,
+    msg,
+    work_list, // 作业列表（数组）：[{work_code,work_name}]
 }
 ```
-
-
 
 ### POST /get_assignments_detail
 
 > 获取作业码对应的详细作业信息
 
-```
+``` json
 {
-	token,
-	work_code
+    token,
+    work_code
 }
 ```
 
-```
+``` json
 {
-	token,
-	code,
-	msg,
-	work_name,
-	work_belong,
-	work_desc,
-	class,
+    token,
+    code,
+    msg,
+    work_name,
+    work_belong,
+    work_desc,
+    class,
 }
 ```
-
 
 ### POST /reset_password
 
 > 修改密码
-> 
+>  
 > admin可以修改自己和任意学生的密码
 >
 > 学生只能修改自己的密码
 
-```
+``` 
 {
 	token,
 	usr, // 要修改密码的账户名,省缺默认为修改当前账户密码
@@ -267,7 +201,7 @@ Connection: close
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -275,19 +209,17 @@ Connection: close
 }
 ```
 
-
-
 ### POST /get_class_list
 
 > 获取 学生/老师 所在班级 的数组
 
-```
+``` 
 {
 	token,
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -296,20 +228,18 @@ Connection: close
 }
 ```
 
-
-
 ### POST /get_assignments_list_by_class
 
 > 获取当前用户所在当前班级的所有作业的数组，按时间顺序排序
 
-```
+``` 
 {
 	token,
 	class,
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -318,9 +248,7 @@ Connection: close
 }
 ```
 
-
-
-### !!POST /preview_assignment
+### !! POST /preview_assignment
 
 > 预览作业
 >
@@ -328,7 +256,7 @@ Connection: close
 >
 > 老师可以预览当前班级任意学生的作业
 
-```
+``` 
 {
 	token, // 身份鉴别
 	work_code, // 作业码
@@ -336,7 +264,7 @@ Connection: close
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -351,9 +279,7 @@ Connection: close
 */
 ```
 
-
-
-### !!POST /get_guy_info
+### !! POST /get_guy_info
 
 > 获取学生详细信息
 >
@@ -361,14 +287,14 @@ Connection: close
 >
 > 教师可获取任意学生信息
 
-```
+``` 
 {
 	token,
 	usr, // 学生不填，教师必填
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -378,15 +304,13 @@ Connection: close
 }
 ```
 
-
-
-### !!POST /grade_assignments
+### !! POST /grade_assignments
 
 > 打分
 >
 > 老师通过作业码和学生账户名给学生打分
 
-```
+``` 
 {
 	token,
 	work_code,
@@ -395,7 +319,7 @@ Connection: close
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -403,9 +327,7 @@ Connection: close
 }
 ```
 
-
-
-### !!POST /get_score
+### !! POST /get_score
 
 > 获取分数
 >
@@ -413,7 +335,7 @@ Connection: close
 >
 > 学生仅可查看自己的
 
-```
+``` 
 {
 	token,
 	work_code,
@@ -421,7 +343,7 @@ Connection: close
 }
 ```
 
-```
+``` 
 {
 	token,
 	code,
@@ -429,4 +351,3 @@ Connection: close
 	score
 }
 ```
-
