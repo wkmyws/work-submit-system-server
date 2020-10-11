@@ -279,7 +279,7 @@
 */
 ```
 
-### !! POST /get_guy_info
+### POST /get_guy_info
 
 > 获取学生详细信息
 >
