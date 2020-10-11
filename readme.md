@@ -97,7 +97,9 @@ Connection: close
 {
     token, // 登陆后获取的token
     work_name, // 作业名称
-    work_desc // 作业说明
+    work_desc, // 作业说明
+	work_deadline, // 截止时间 格式：时间戳
+	work_class, // 作业所属班级
 }
 ```
 
@@ -225,7 +227,7 @@ Connection: close
 
 
 
-### !!POST /get_assignments_detail
+### POST /get_assignments_detail
 
 > 获取作业码对应的详细作业信息
 
@@ -275,7 +277,7 @@ Connection: close
 
 
 
-### !!POST /get_class_list
+### POST /get_class_list
 
 > 获取 学生/老师 所在班级 的数组
 
@@ -296,7 +298,7 @@ Connection: close
 
 
 
-### !!POST /get_assignments_list_by_class
+### POST /get_assignments_list_by_class
 
 > 获取当前用户所在当前班级的所有作业的数组，按时间顺序排序
 
