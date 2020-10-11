@@ -38,14 +38,14 @@ async function isAdminByUsr(usr) {
     return res.length == 0 ? false : res[0]["identify"] == 0
 }
 
-async function addWork(work_code, work_name, work_belong, work_desc) {
+async function addWork(work_code, work_name, work_belong, work_desc, work_deadline, work_class) {
     let res = []
     try {
         res = await query(
-            "insert into work(work_code,work_name,work_belong,work_desc) values(?,?,?,?);",
-            [work_code, work_name, work_belong, work_desc]
+            "insert into work(work_code,work_name,work_belong,work_desc,work_deadline,work_class) values(?,?,?,?,?,?);",
+            [work_code, work_name, work_belong, work_desc, work_deadline, work_class]
         )
-    } catch (err) { return false }
+    } catch (err) { console.log(err);return false }
     if (res.length == 0) { // 已有此作业
         return false
     }
@@ -78,7 +78,7 @@ async function getWorkListByWorkBelong(work_belong) {
 
 async function getWorkDetailsByWorkCode(work_code) {
     let res = await query("select * from work where work_code=? limit 1;", [work_code])
-    return res.length == 0 ? null : res[0]
+    return res.length == 0 ? null : Array.from(res)[0]
 }
 
 async function resetPassword(usr, newPwd) {
@@ -87,6 +87,38 @@ async function resetPassword(usr, newPwd) {
         [newPwd, usr]
     )
     return res["message"]
+}
+
+async function getClassList(usr) {
+    let res = await query(
+        "select class_list from login where usr=?;",
+        [usr]
+    )
+    res = Array.from(res)[0]["class_list"]
+    return res
+}
+
+async function getAssignmentsListByClass(work_class) {
+    let res = await query(
+        "select work_code,work_name from work where work_class=?;",
+        [work_class]
+    )
+    res = Array.from(res)
+    return res
+}
+
+
+async function usrInfo(usr) {
+    let res = await query(
+        "select * from login where usr=?",
+        [usr]
+    )
+    res = Array.from(res)[0]
+    // 处理 class_list 列表
+    if(res["class_list"]){
+        res["class_list"]=(JSON.parse(res["class_list"]))
+    }
+    return res
 }
 
 exports.login = login
@@ -98,9 +130,12 @@ exports.getWorkListByWorkBelong = getWorkListByWorkBelong
 exports.getWorkDetailsByWorkCode = getWorkDetailsByWorkCode
 exports.isAdminByUsr = isAdminByUsr
 exports.resetPassword = resetPassword
+exports.getClassList = getClassList
+exports.getAssignmentsListByClass = getAssignmentsListByClass
+exports.usrInfo = usrInfo
 
 async function test() {
 
 }
 test()
-
+usrInfo("181090808")

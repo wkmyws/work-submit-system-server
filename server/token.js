@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const config = require('./config')
+const sql = require('./sql')
 
 function addToken(json_data) {
     return jwt.sign(json_data, config.jwt_pwd, { expiresIn: config.jwt_passTime })
@@ -78,9 +79,15 @@ function checkTokenInHttp(whiteList) {
     }
 }
 
+async function detail(token) {
+    let res = await sql.usrInfo(params(token)["usr"])
+    return res
+}
+
 exports.set = addToken
 exports.get = getToken
 exports.params = params
 exports.isAdmin = isAdmin
 exports.isStu = isStu
 exports.checkTokenInHttp = checkTokenInHttp
+exports.detail = detail

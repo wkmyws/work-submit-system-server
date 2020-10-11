@@ -53,15 +53,31 @@ router.post('/publish_assignments', async (ctx, next) => {
     }
     let work_name = ctx.request.body["work_name"]
     let work_desc = ctx.request.body["work_desc"]
+    let work_deadline = ctx.request.body["work_deadline"]
+    let work_class = ctx.request.body["work_class"]
     if (!work_name) {
         return ctx.body = {
             code: 21,
             msg: "作业名不为空"
         }
     }
+    if (!work_class) {
+        return ctx.body = {
+            code: 25,
+            msg: "作业所属班级为空"
+        }
+    }
     let work_belong = Token.params(ctx.myToken)["usr"]
+    // 判断当前用户是否有权限创建属于这个班级的作业
+    let class_list = (await sql.usrInfo(work_belong))["class_list"]
+    if (class_list.some((v) => v == ctx.request.body["work_class"]) == false) {
+        return ctx.body = {
+            code: 26,
+            token: ctx.myToken
+        }
+    }
     let work_code = workCode.encode(work_name, work_belong)
-    let res = await sql.addWork(work_code, work_name, work_belong, work_desc)
+    let res = await sql.addWork(work_code, work_name, work_belong, work_desc, work_deadline, work_class)
     if (res == false) {
         return ctx.body = {
             code: 22,
@@ -120,7 +136,26 @@ router.post('/submit_work', async (ctx, next) => {
             token: ctx.myToken
         }
     }
+    // 判断提交的作业是否超时
+    let work_detail = await sql.getWorkDetailsByWorkCode(work_code)
+    let deadline = work_detail["work_deadline"] - 0
+    if ((deadline) && (deadline - new Date().getTime() < 0)) {
+        return ctx.body = {
+            code: 24,
+            msg: "作业存在截止时间且上传时间已截止",
+            token: ctx.myToken
+        }
+    }
     let usrInfo = Token.params(ctx.myToken)
+    // 判断当前用户是否有权限创建属于这个班级的作业
+    let class_list = (await sql.usrInfo(usrInfo.usr))["class_list"]
+    if (class_list.some((v) => v == ctx.request.body["work_class"]) == false) {
+        return ctx.body = {
+            code: 26,
+            token: ctx.myToken,
+            msg: "当前用户不在此班级，无法操作此作业"
+        }
+    }
     const file = ctx.request.files.file
     let reader = fs.createReadStream(file.path)
     //let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
@@ -194,7 +229,8 @@ router.post('/get_assignments_detail', async (ctx, next) => {
         token: ctx.myToken,
         work_name: res["work_name"],
         work_belong: res["work_belong"],
-        work_desc: res["work_desc"]
+        work_desc: res["work_desc"],
+        class: res["work_class"]
     }
 })
 
@@ -225,6 +261,34 @@ router.post('/reset_password', async (ctx, next) => {
     }
 
 })
+
+router.post('/get_class_list', async (ctx, next) => {
+    let usrInfo = Token.params(ctx.myToken)
+    let class_list = await sql.getClassList(usrInfo["usr"])
+    return ctx.body = {
+        token: ctx.myToken,
+        code: 0,
+        class_list: JSON.parse(class_list)
+    }
+})
+
+router.post('/get_assignments_list_by_class', async (ctx, next) => {
+    let work_class = ctx.request.body["class"]
+    let usrInfo = await Token.detail(ctx.myToken)
+    if (usrInfo["class_list"].some((v) => v == work_class) == false) {
+        return ctx.body = {
+            token: ctx.myToken,
+            code: 26
+        }
+    }
+    let work_list = await sql.getAssignmentsListByClass(work_class)
+    return ctx.body = {
+        token: ctx.myToken,
+        code: 0,
+        work_list: work_list
+    }
+})
+
 
 
 app.use(cors({

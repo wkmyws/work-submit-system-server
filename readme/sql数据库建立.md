@@ -20,14 +20,14 @@ create table login(
     class_list nvarchar(300)
 );
 
-insert into login(usr,pwd,identify) values("admin","123",0);
-insert into login(usr,pwd,identify) values("user","000",1);
-insert into login(usr,pwd,identify) values("181090808","000",1);
-insert into login(usr,pwd,identify) values("181090806","000",1);
-insert into login(usr,pwd,identify) values("181090804","000",1);
-insert into login(usr,pwd,identify) values("181090807","000",1);
-insert into login(usr,pwd,identify) values("181090809","000",1);
-insert into login(usr,pwd,identify) values("181090833","000",1);
+insert into login(usr,pwd,identify,name,class_list) values("teacher1","123",0,"唔西迪",'["sj001","sj002"]');
+insert into login(usr,pwd,identify,name,class_list) values("teacher2","123",0,"玛卡巴卡",'["sj003","sj004","sj005"]');
+insert into login(usr,pwd,identify,name,class_list) values("181090808","000",1,"史洋炀",'["sj001","sj003","sj005"]');
+insert into login(usr,pwd,identify,name,class_list) values("181090804","000",1,"田悦辰",'["sj001","sj002"]');
+insert into login(usr,pwd,identify,name,class_list) values("181090806","000",1,"阮荣耀",'["sj001","sj003","sj004"]');
+insert into login(usr,pwd,identify,name,class_list) values("181090807","000",1,"邵柯帆",'["sj004","sj005"]');
+insert into login(usr,pwd,identify,name,class_list) values("181090809","000",1,"顾玮煜",'["sj002","sj004","sj005"]');
+insert into login(usr,pwd,identify,name,class_list) values("181090833","000",1,"龚佳慧",'["sj001","sj002","sj003","sj004","sj005"]');
 
 select * from login;
 ```
@@ -49,7 +49,8 @@ create table work(
     work_name nvarchar(1000) not null,
     work_belong nvarchar(50) references login(usr),
     work_desc nvarchar(3000),
-    work_class nvarchar(20)
+    work_class nvarchar(20),
+    work_deadline bigint
 );
 
 insert into work(work_code,work_name,work_belong) values("sdwW","first work","admin");

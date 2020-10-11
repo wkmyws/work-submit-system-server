@@ -82,3 +82,12 @@ content-type: application/json
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMTMwODkyMywiZXhwIjoxNjAxMzEwNzIzfQ.-V7LrcpKZGiAeZu_tp_pUOBxBtYfDhcw_5qRyb9TUtc",
     "newPwd": "000"
 }
+
+
+### 获取班级列表
+POST http://47.96.235.211:3001/get_class_list/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiWydzajAwMScsJ3NqMDAyJ10iLCJuYW1lIjpudWxsLCJpYXQiOjE2MDIyMTM3MzgsImV4cCI6MTYwMjIxNTUzOH0.5vjgA8ejEfNc2cNsMUBGj0c2KVed6CjAIY_5Wo598bk"
+}

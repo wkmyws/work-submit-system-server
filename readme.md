@@ -224,7 +224,7 @@
 	token,
 	code,
 	msg,
-	class_list, // class_list 为字符串形式，通过 JSON.parse(class_list)转为数组形式
+	class_list, // class_list 为数组形式,如 ["sj003,"sj004","sj005"]
 }
 ```
 

@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "antd": "^4.6.6"
+    "antd": "^4.6.6",
+    "axios": "^0.20.0"
   }
 }
