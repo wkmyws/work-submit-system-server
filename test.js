@@ -9,12 +9,9 @@ axios.post("http://47.96.235.211:3000/login",{
         token
     }).then((res)=>{
         console.log(res.data)
-        axios.post("http://47.96.235.211:3000/get_assignments_list_by_class",{
+        axios.post("http://47.96.235.211:3000/get_guy_info",{
             token,
-            work_name:"第一次作业",
-            work_desc:"整一个图床",
-            work_deadline: new Date().getTime()+60*60*24*60*1000,
-            class:"sj005"
+            usr:"181090833"
         }).then((res)=>{
             console.log(res.data)
         })

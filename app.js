@@ -11,7 +11,7 @@ const workCode = require('./server/work_code')
 const fs = require('fs')
 const path = require('path')
 const myZip = require('./server/zip');
-const fsm = require('./server/fs_more')
+const fsm = require('./server/fs_more');
 const app = new Koa()
 const router = new Router()
 
@@ -289,7 +289,40 @@ router.post('/get_assignments_list_by_class', async (ctx, next) => {
     }
 })
 
+router.post('/get_guy_info', async (ctx, next) => {
+    let usrInfo = await Token.detail(ctx.myToken)
+    delete (usrInfo["pwd"])
+    let target = ctx.request.body["usr"]
+    if (usrInfo["identify"] == 1) {
+        // 学生
+        return ctx.body = {
+            token: ctx.myToken,
+            code: 2,
+            info: usrInfo
+        }
+    } else if (usrInfo["identify"] == 0) {
+        // 老师
+        if (!target) return ctx.body = {
+            code: 11,
+            token: ctx.myToken,
+            msg: "待查寻usr为空"
+        }
+        usrInfo = await sql.usrInfo(target)
+        delete (usrInfo["pwd"])
+        return ctx.body = {
+            token: ctx.myToken,
+            code: 0,
+            info: usrInfo
+        }
+    } else {
+        // 未知身份
+    }
+    return ctx.body = {
+        token: ctx.myToken,
+        code: 0,
 
+    }
+})
 
 app.use(cors({
     credentials: true,//默认情况下，Cookie不包括在CORS请求之中。设为true，即表示服务器许可Cookie可以包含在请求中

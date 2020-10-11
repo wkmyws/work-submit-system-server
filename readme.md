@@ -299,8 +299,7 @@
 	token,
 	code,
 	msg,
-	name,
-	class_list
+	info, // json {usr,identify,class_list,name}
 }
 ```
 
