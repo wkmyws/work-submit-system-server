@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "antd": "^4.6.6",
-    "axios": "^0.20.0"
+    "axios": "^0.20.0",
+    "node-pdftk": "^2.1.3"
   }
 }

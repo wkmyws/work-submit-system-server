@@ -50,7 +50,8 @@ create table work(
     work_belong nvarchar(50) references login(usr),
     work_desc nvarchar(3000),
     work_class nvarchar(20),
-    work_deadline bigint
+    work_deadline bigint,
+    no int not null auto_increment
 );
 
 insert into work(work_code,work_name,work_belong) values("sdwW","first work","admin");

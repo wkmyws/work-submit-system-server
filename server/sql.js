@@ -37,13 +37,13 @@ async function isAdminByUsr(usr) {
     )
     return res.length == 0 ? false : res[0]["identify"] == 0
 }
-
 async function addWork(work_code, work_name, work_belong, work_desc, work_deadline, work_class) {
+    let no=(await query("select count(*) as num from work where work_class=?",[work_class]))[0]["num"]-0+1;
     let res = []
     try {
         res = await query(
-            "insert into work(work_code,work_name,work_belong,work_desc,work_deadline,work_class) values(?,?,?,?,?,?);",
-            [work_code, work_name, work_belong, work_desc, work_deadline, work_class]
+            "insert into work(work_code,work_name,work_belong,work_desc,work_deadline,work_class,no) values(?,?,?,?,?,?,?);",
+            [work_code, work_name, work_belong, work_desc, work_deadline, work_class,no]
         )
     } catch (err) { console.log(err);return false }
     if (res.length == 0) { // 已有此作业
@@ -121,6 +121,18 @@ async function usrInfo(usr) {
     return res
 }
 
+async function generateFileName(usr,work_code){
+    let format=[]
+    let info=await usrInfo(usr);
+    format.push(info["usr"])
+    format.push(info["name"])
+    info=await getWorkDetailsByWorkCode(work_code)
+    format.push(info["work_class"])
+    format.push(info["no"])
+    return (format.join("_"))
+}
+
+
 exports.login = login
 exports.addWork = addWork
 exports.delWork = delWork
@@ -133,9 +145,4 @@ exports.resetPassword = resetPassword
 exports.getClassList = getClassList
 exports.getAssignmentsListByClass = getAssignmentsListByClass
 exports.usrInfo = usrInfo
-
-async function test() {
-
-}
-test()
-usrInfo("181090808")
+exports.generateFileName=generateFileName

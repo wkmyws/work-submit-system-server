@@ -127,6 +127,7 @@ router.post('/delete_assignments', async (ctx, next) => {
 
 
 // 上传作业
+// !!! .docx only
 router.post('/submit_work', async (ctx, next) => {
     let work_code = ctx.request.body["work_code"]
     if (work_code == null || (await sql.haveWork(work_code)) == false) {
@@ -149,7 +150,7 @@ router.post('/submit_work', async (ctx, next) => {
     let usrInfo = Token.params(ctx.myToken)
     // 判断当前用户是否有权限创建属于这个班级的作业
     let class_list = (await sql.usrInfo(usrInfo.usr))["class_list"]
-    if (class_list.some((v) => v == ctx.request.body["work_class"]) == false) {
+    if (class_list.some((v) => v == work_detail["work_class"]) == false) {
         return ctx.body = {
             code: 26,
             token: ctx.myToken,
@@ -157,6 +158,10 @@ router.post('/submit_work', async (ctx, next) => {
         }
     }
     const file = ctx.request.files.file
+    if (!file) return ctx.body = {
+        code: 41,
+        token: ctx.myToken
+    }
     let reader = fs.createReadStream(file.path)
     //let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
     // 覆盖提交 会先删除当前用户之前创建的文件夹及子文件
@@ -165,9 +170,48 @@ router.post('/submit_work', async (ctx, next) => {
     }
     // 重新创建用户文件夹
     fs.mkdirSync(path.join('./', 'work', work_code, usrInfo["usr"]))
-    let filePath = path.join('./', 'work', work_code, usrInfo["usr"], file.name)
+    // 重命名!!!
+    let baseName = (await sql.generateFileName(usrInfo["usr"], work_code))
+    let fileName = baseName + ".docx"
+    let filePath = path.join('./', 'work', work_code, usrInfo["usr"], fileName)
     let upStream = fs.createWriteStream(filePath)
     reader.pipe(upStream)
+    // word 转 pdf
+    await fsm.wordToPdf(filePath, path.dirname(filePath))
+    // 删除原先的word文稿
+    //fs.unlinkSync(filePath)
+    // 加水印
+    let pdfName = path.resolve(path.dirname(filePath), path.basename(filePath).replace(/\..+$/, ".pdf"))
+    // 生成封面文件
+    let fengmianPDF = await fsm.generatePdfCover(
+        "./__tmp_appjs_generatePdf.pdf",
+        usrInfo["usr"],
+        usrInfo["name"],
+        work_detail["work_class"],
+        work_detail["no"]
+    )
+    // 合并pdf
+    let catPdf = await fsm.catPdf("./__tmp_appjs_catPDF.pdf", fengmianPDF, pdfName)
+    // 添加水印
+    let watermarkText = `<style>
+    div {
+        position: absolute;
+        top: 37px;
+        left: 34px;
+        z-index: 9;
+        transform: rotate(6.5deg);
+        -o-transform: rotate(6.5deg);
+        -webkit-transform: rotate(6.5deg);
+        -moz-transform: rotate(6.5deg);
+        color: grey;
+        border:2px solid #000
+    }
+</style>
+<div>${usrInfo["usr"]}_${usrInfo["name"]}</div>`
+    let donPdf = await fsm.pdfAddWatermark(catPdf, watermarkText, "./__tmp_appjs_finalPdf.pdf")
+    fs.unlinkSync(fengmianPDF)
+    fs.unlinkSync(catPdf)
+    fs.renameSync(donPdf, path.resolve(path.dirname(filePath), baseName + ".pdf"))
     return ctx.body = {
         code: 0,
         msg: "上传成功！",
@@ -322,6 +366,24 @@ router.post('/get_guy_info', async (ctx, next) => {
         code: 0,
 
     }
+})
+
+router.post('/preview_assignment', async (ctx, next) => {
+    // !!!
+    let usrInfo = await Token.detail(ctx.myToken)
+    let target = ctx.request.body["usr"]
+    let work_code = ctx.request.body["work_code"]
+    if (usrInfo["identify"] == 1) {
+        // 学生
+        target = usrInfo["usr"]
+    }
+    if (!target || !work_code) return ctx.body = {
+        code: 4,
+        token: ctx.myToken,
+        msg: "上传参数错误"
+    }
+    // assert(pdf only)
+
 })
 
 app.use(cors({
