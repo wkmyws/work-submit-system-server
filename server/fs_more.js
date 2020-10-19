@@ -3,6 +3,7 @@ const fs = require('fs')
 const util = require('util');  //用来提供常用函数的集合
 const pdftk = require('node-pdftk');
 const { url } = require('inspector');
+const path = require('path')
 var exec = util.promisify(require('child_process').exec);  // uti
 function rm_rf(path) {
     if (fs.existsSync(path)) {
@@ -20,6 +21,22 @@ function rm_rf(path) {
         return false
     }
 }
+
+function listFile(dir) {
+    let list = []
+    let arr = fs.readdirSync(dir);
+    arr.forEach(function (item) {
+        let fullpath = path.join(dir, item);
+        let stats = fs.statSync(fullpath);
+        if (stats.isDirectory()) {
+            listFile(fullpath);
+        } else {
+            list.push(fullpath);
+        }
+    });
+    return list;
+}
+
 
 async function wordToPdf(wordPath, pdfPath) {
     try {
@@ -83,8 +100,8 @@ async function generatePdfCover(url, usr, name = "", work_class = "", work_no = 
 `
     return await mdToPdf(md, url)
 }
-async function catPdf(target,A,B){
-    let order=`pdftk A=${A} B=${B} cat A B output ${target}`
+async function catPdf(target, A, B) {
+    let order = `pdftk A=${A} B=${B} cat A B output ${target}`
     try {
         const { stdout, stderr } = await exec(order);
         //console.log('stdout:', stdout);
@@ -104,4 +121,5 @@ exports.pdfAddWatermark = pdfAddWatermark
 exports.mdToPdf = mdToPdf
 exports.htmlToPdf = htmlToPdf
 exports.generatePdfCover = generatePdfCover
-exports.catPdf=catPdf
+exports.catPdf = catPdf
+exports.listFile = listFile

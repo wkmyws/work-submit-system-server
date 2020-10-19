@@ -4,6 +4,7 @@ const Router = require('koa-router')
 const bodyparser = require('koa-bodyparser');
 const koaBody = require('koa-body');
 const jwt = require('koa-jwt')
+const send = require('koa-send')
 const Token = require('./server/token')
 const sql = require('./server/sql')
 const cors = require('koa2-cors');
@@ -383,8 +384,20 @@ router.post('/preview_assignment', async (ctx, next) => {
         msg: "上传参数错误"
     }
     // assert(pdf only)
-
+    let p = ("./work/" + work_code + "/" + target + "/")
+    p = Array.from(fsm.listFile(p)).filter(v => /\.pdf$/.test(v))[0]
+    let tmpDownloadUrl = path.join("public/tmp/", path.basename(p))
+    fs.copyFileSync(p, tmpDownloadUrl)
+    setTimeout(() => {
+        fs.unlinkSync(tmpDownloadUrl)
+    }, 1000 * 60)
+    return ctx.body = {
+        code: 0,
+        token: ctx.myToken,
+        url: tmpDownloadUrl.replace("public", "")
+    }
 })
+
 
 app.use(cors({
     credentials: true,//默认情况下，Cookie不包括在CORS请求之中。设为true，即表示服务器许可Cookie可以包含在请求中
