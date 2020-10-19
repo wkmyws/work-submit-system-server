@@ -390,7 +390,7 @@ router.post('/preview_assignment', async (ctx, next) => {
     fs.copyFileSync(p, tmpDownloadUrl)
     setTimeout(() => {
         fs.unlinkSync(tmpDownloadUrl)
-    }, 1000 * 60)
+    }, 1000 * 10)
     return ctx.body = {
         code: 0,
         token: ctx.myToken,

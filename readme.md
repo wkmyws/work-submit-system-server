@@ -249,7 +249,7 @@
 }
 ```
 
-### !! POST /preview_assignment
+### POST /preview_assignment
 
 > 预览作业
 >
