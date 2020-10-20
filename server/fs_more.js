@@ -4,7 +4,8 @@ const util = require('util');  //用来提供常用函数的集合
 const pdftk = require('node-pdftk');
 const { url } = require('inspector');
 const path = require('path')
-var exec = util.promisify(require('child_process').exec);  // uti
+const exec = util.promisify(require('child_process').exec);  // uti
+const watermark = require('image-watermark');
 function rm_rf(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach((file) => {
@@ -48,6 +49,10 @@ async function wordToPdf(wordPath, pdfPath) {
     }
     return pdfPath
 }
+function test(url){
+    watermark.embedWatermark(url, {'text' : 'sample watermark'});
+}
+
 async function pdfAddWatermark(url, watermark, newPdfUrl) {
     const tmpFileUrl = "./__tmp_server_mdWatermark.pdf"
     await htmlToPdf(watermark, tmpFileUrl)
@@ -89,6 +94,7 @@ async function htmlToPdf(htmlString, url) {
 async function generatePdfCover(url, usr, name = "", work_class = "", work_no = "") {
     const md =
         `
+> 
 
 | 学校 | 南京审计大学 |
 | -- | -- |
