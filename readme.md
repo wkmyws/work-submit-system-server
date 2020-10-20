@@ -304,19 +304,27 @@
 }
 ```
 
-### !! POST /grade_assignments
+### POST /grade_assignments
 
 > 打分
 >
 > 老师通过作业码和学生账户名给学生打分
+>  
+> 接收一个updateTarget数组批量上传学生分数
 
 ``` 
 {
 	token,
 	work_code,
-	usr,
-	score
+	updateTarget 
 }
+
+数据格式：
+updateTarget=[
+  {usr:"用户1",score:98},
+  {usr:"用户2",score:66},
+  ......
+]
 ```
 
 ``` 
@@ -327,7 +335,7 @@
 }
 ```
 
-### !! POST /get_score
+### POST /get_score
 
 > 获取分数
 >
@@ -348,6 +356,12 @@
 	token,
 	code,
 	msg,
-	score
+	score_detail
 }
+
+score_detail={
+  score,
+  remark
+}
+
 ```

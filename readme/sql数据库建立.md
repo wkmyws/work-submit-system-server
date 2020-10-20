@@ -61,11 +61,15 @@ insert into work(work_code,work_name,work_belong) values("sdwW","first work","ad
 ```
 // 成绩表
 /*
-	usr 外键
-	score_list [{work_code,score},...]
+	json:{
+        usr:{
+            score,
+            remark,
+        }
+    }
 */
 create table score(
-	usr nvarchar(50) primary key,
-	score_list nvarchar(10000)
+	work_code nvarchar(1000) primary key,
+	json nvarchar(10000) default '{}'
 );
 ```

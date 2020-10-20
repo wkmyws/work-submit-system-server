@@ -15,6 +15,7 @@ const myZip = require('./server/zip');
 const fsm = require('./server/fs_more');
 const app = new Koa()
 const router = new Router()
+const scoreSystem = require('./server/scoreSystem')
 
 router.get('/login', async (ctx, next) => {
     ctx.body = "请使用POST方法"
@@ -163,6 +164,10 @@ router.post('/submit_work', async (ctx, next) => {
         code: 41,
         token: ctx.myToken
     }
+
+    //创建成绩表记录 成绩初始为-2表示学生未提交作业，详见readme/作业分数说明
+    await scoreSystem.setScoreByWorkCode(work_code, [{ usr: usrInfo.usr, score: -1 }])
+    // 提交后的文件操作
     let reader = fs.createReadStream(file.path)
     //let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
     // 覆盖提交 会先删除当前用户之前创建的文件夹及子文件
@@ -398,6 +403,41 @@ router.post('/preview_assignment', async (ctx, next) => {
     }
 })
 
+router.post('/grade_assignments', async (ctx, next) => {
+    // 验证老师身份
+    // !!!
+    //let usrInfo = await Token.detail(ctx.myToken)
+    if (Token.isAdmin(ctx.myToken) == false) {
+        return ctx.body = {
+            code: 2
+        }
+    }
+    let work_code = ctx.request.body["work_code"]
+    let updateTarget = ctx.request.body["updateTarget"]
+    await scoreSystem.setScoreByWorkCode(work_code, updateTarget)
+    return ctx.body = {
+        code: 0,
+        token: ctx.myToken
+    }
+})
+
+router.post('/get_score', async (ctx, next) => {
+    // !!! 权限配置！！！
+    let usr = ctx.request.body["usr"]
+    let work_code = ctx.request.body["work_code"]
+    let usrInfo = await Token.detail(ctx.myToken)
+    if (Token.isAdmin(ctx.myToken) == false && usrInfo["usr"] != usr) {
+        return ctx.body = {
+            code: 2
+        }
+    }
+    let ans = await scoreSystem.getScoreDetail(work_code, usr)
+    return ctx.body = {
+        code: 0,
+        score_detail: ans,
+        token: ctx.myToken
+    }
+})
 
 app.use(cors({
     credentials: true,//默认情况下，Cookie不包括在CORS请求之中。设为true，即表示服务器许可Cookie可以包含在请求中
