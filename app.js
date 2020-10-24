@@ -234,7 +234,7 @@ router.post('/download_assignments', async (ctx, next) => {
             token: ctx.myToken
         }
     }
-    let download_url = myZip.zipAndDownload(work_code)()
+    let download_url = (await myZip.zipAndDownload(work_code))()
     return ctx.body = {
         code: 0,
         token: ctx.myToken,
@@ -265,7 +265,7 @@ router.post('/get_published_assignments_list', async (ctx, next) => {
 router.post('/get_assignments_detail', async (ctx, next) => {
     let work_code = ctx.request.body["work_code"]
     console.log(work_code)
-    if(!work_code)return ctx.body={
+    if (!work_code) return ctx.body = {
         code: 4
     }
     let res = await sql.getWorkDetailsByWorkCode(work_code)

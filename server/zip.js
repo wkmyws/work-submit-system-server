@@ -15,6 +15,8 @@ async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
     tmpFile += ".zip"
     let url = path.resolve(__dirname, '../public', 'tmp', tmpFile)
     let list = listFile(path.resolve(__dirname, '../work', work_code))
+    // 只下载pdf
+    list = list.filter((v) => path.extname(v).toLowerCase() == ".pdf")
     await pkg(list, url)
     // zipper.sync
     //     .zip(path.resolve('work', work_code))
