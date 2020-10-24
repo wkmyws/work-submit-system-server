@@ -26,11 +26,11 @@ function rm_rf(path) {
 function listFile(dir) {
     let list = []
     let arr = fs.readdirSync(dir);
-    arr.forEach(function (item) {
+    arr.forEach(async (item) => {
         let fullpath = path.join(dir, item);
         let stats = fs.statSync(fullpath);
         if (stats.isDirectory()) {
-            listFile(fullpath);
+            list = list.concat(listFile(fullpath))
         } else {
             list.push(fullpath);
         }
@@ -49,8 +49,8 @@ async function wordToPdf(wordPath, pdfPath) {
     }
     return pdfPath
 }
-function test(url){
-    watermark.embedWatermark(url, {'text' : 'sample watermark'});
+function test(url) {
+    watermark.embedWatermark(url, { 'text': 'sample watermark' });
 }
 
 async function pdfAddWatermark(url, watermark, newPdfUrl) {

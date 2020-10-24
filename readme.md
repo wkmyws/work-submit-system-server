@@ -182,7 +182,8 @@
     work_belong,
     work_desc,
     class,
-    no
+    no,
+    work_deadline
 }
 ```
 

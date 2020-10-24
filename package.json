@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "antd": "^4.6.6",
+    "archiver": "^5.0.2",
     "axios": "^0.20.0",
+    "image-watermark": "0.0.7",
     "node-pdftk": "^2.1.3"
   }
 }

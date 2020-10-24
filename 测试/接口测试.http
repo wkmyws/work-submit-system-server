@@ -3,7 +3,7 @@ POST http://47.96.235.211:3000/login/ HTTP/1.1
 content-type: application/json
 
 {
-    "usr": "user",
+    "usr": "181090808",
     "pwd": "000"
 }
 
@@ -12,7 +12,7 @@ POST http://47.96.235.211:3000/login/ HTTP/1.1
 content-type: application/json
 
 {
-    "usr": "admin",
+    "usr": "teacher1",
     "pwd": "123"
 }
 
@@ -50,8 +50,8 @@ POST http://47.96.235.211:3000/download_assignments/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDExMDUzNjksImV4cCI6MTYwMTEwNzE2OX0.jKTCTOd4o2dF6iCYkne-tc4yXKFSvtVw5G2Zq2ijCSA",
-    "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCJ0mDpWnEJOtV1"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzI5NDAyNSwiZXhwIjoxNjAzMjk1ODI1fQ.q3KJrBpGTKPePSVdKxYEH8myylE3rxPYjKbQwcD12yc",
+    "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak8dchA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8o8YmYTsx1oQrx1qQMrb8ZenDZ0oD38vD3SqC3OnV1"
 }
 
 
@@ -85,9 +85,18 @@ content-type: application/json
 
 
 ### 获取班级列表
-POST http://47.96.235.211:3001/get_class_list/ HTTP/1.1
+POST http://47.96.235.211:3000/get_class_list/ HTTP/1.1
 content-type: application/json
 
 {
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiWydzajAwMScsJ3NqMDAyJ10iLCJuYW1lIjpudWxsLCJpYXQiOjE2MDIyMTM3MzgsImV4cCI6MTYwMjIxNTUzOH0.5vjgA8ejEfNc2cNsMUBGj0c2KVed6CjAIY_5Wo598bk"
+}
+
+### 预览作业
+POST http://47.96.235.211:3000/preview_assignment/ HTTP/1.1
+content-type: application/json
+
+{
+    "work_code":"Uo9tRt9hNsvXRMKYEYBdhApak8dchA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8o8YmYTsx1oQrx1qQMrb8ZenDZ0oD38vD3SqC3OnV1",
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiIxODEwOTA4MDgiLCJwd2QiOiIwMDAiLCJpZGVudGlmeSI6MSwiY2xhc3NfbGlzdCI6IltcInNqMDAxXCIsXCJzajAwM1wiLFwic2owMDVcIl0iLCJuYW1lIjoi5Y-y5rSL54KAIiwiaWF0IjoxNjAzMjA0NDM2LCJleHAiOjE2MDMyMDYyMzZ9.3DWAiFmoBxpEi8X_NEHWJ2mJ8nQTXH0dF7aRDlj4VAk"
 }

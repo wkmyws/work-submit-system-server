@@ -45,7 +45,7 @@ async function addWork(work_code, work_name, work_belong, work_desc, work_deadli
             "insert into work(work_code,work_name,work_belong,work_desc,work_deadline,work_class,no) values(?,?,?,?,?,?,?);",
             [work_code, work_name, work_belong, work_desc, work_deadline, work_class, no]
         )
-        await query("insert into score(work_code) values(?)",[work_code])
+        await query("insert into score(work_code) values(?)", [work_code])
     } catch (err) { console.log(err); return false }
     if (res.length == 0) { // 已有此作业
         return false
@@ -63,7 +63,7 @@ async function haveWork(work_code) {
 async function delWork(work_code) {
     if ((await haveWork(work_code)) == false) return false
     let res = await query("delete from work where work_code=?;", [work_code])
-    await query("delete from score where work_code=?",[work_code])
+    await query("delete from score where work_code=?", [work_code])
     res = fsm.rm_rf(path.resolve('work/', work_code))
     return res
 }
