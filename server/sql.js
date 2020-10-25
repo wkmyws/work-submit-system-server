@@ -83,6 +83,8 @@ async function getWorkDetailsByWorkCode(work_code) {
     return res.length == 0 ? null : Array.from(res)[0]
 }
 
+
+
 async function resetPassword(usr, newPwd) {
     let res = await query(
         "update login set pwd=? where usr=?;",

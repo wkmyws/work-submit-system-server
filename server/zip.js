@@ -5,6 +5,7 @@ const base62x = require('base62x')
 const fs = require('fs')
 const archiver = require('archiver')
 const listFile = require('./fs_more').listFile
+const sql = require('./sql')
 
 async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
     // expire default=10min
@@ -12,6 +13,8 @@ async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
     let tmpFile = base62x.encode(JSON.stringify({
         time: new Date().getTime(),
     }))
+    const work_detail = await sql.getWorkDetailsByWorkCode(work_code)
+    tmpFile = [work_detail["work_class"], work_detail["work_name"], work_detail["no"]].join("_")
     tmpFile += ".zip"
     let url = path.resolve(__dirname, '../public', 'tmp', tmpFile)
     let list = listFile(path.resolve(__dirname, '../work', work_code))
@@ -25,9 +28,10 @@ async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
 
     return () => {
         relateUrl = url.replace(/^.+public/, "")
-        setTimeout(() => {
-            fs.unlinkSync(url)
-        }, expire)
+        // 定时删除文件
+        // setTimeout(() => {
+        //     fs.unlinkSync(url)
+        // }, expire)
         return relateUrl
     }
 }
