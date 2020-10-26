@@ -1,11 +1,11 @@
 // 封装了更多文件操作
 const fs = require('fs')
 const util = require('util');  //用来提供常用函数的集合
-const pdftk = require('node-pdftk');
-const { url } = require('inspector');
+const pdftk = require('node-pdftk')
 const path = require('path')
 const exec = util.promisify(require('child_process').exec);  // uti
 const watermark = require('image-watermark');
+const { createCanvas, loadImage } = require('canvas')
 function rm_rf(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach((file) => {
@@ -55,10 +55,11 @@ function test(url) {
 
 async function pdfAddWatermark(url, watermark, newPdfUrl) {
     const tmpFileUrl = "./__tmp_server_mdWatermark.pdf"
-    await htmlToPdf(watermark, tmpFileUrl)
+    //await htmlToPdf(watermark, tmpFileUrl)
+    await textToPDF(watermark,tmpFileUrl)
     await new Promise((resolve, reject) => {
         pdftk.input(url)
-            .stamp(tmpFileUrl)
+            .background(tmpFileUrl)
             .output(newPdfUrl)
             .then((buffer) => {
                 return resolve();
@@ -117,6 +118,20 @@ async function catPdf(target, A, B) {
     }
     return target
 }
+async function textToPDF(text, pdfUrl) {
+    return new Promise((resolve, reject) => {
+        watermark.embedWatermark(path.join(__dirname, "__water_tmp.jpg"), { 'text': text, 'font': 'SimSun' });
+        const canvas = createCanvas(500, 500, 'pdf')
+        const ctx = canvas.getContext('2d')
+        loadImage(path.join(__dirname, "watermark.jpg")).then((image) => {
+            ctx.drawImage(image, 0, 0)
+            var buff = canvas.toBuffer()
+            fs.writeFileSync(pdfUrl, buff)
+            return resolve(pdfUrl)
+        }).catch(err => reject(err))
+    })
+}
+
 //generatePdfCover("syy.pdf","181090808","史洋炀","sj002","1")
 //pdfAddWatermark("a.pdf")
 //wordToPdf("../work/Uo9tRt9hNsvXRMKYEYBdhApak8dchA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8o8YmYTsx1oQrx1qQMrb8ZenDZ0oD38vD3SqC3OnV1/181090808/181090808_史洋炀_sj005_3.docx", "aa.pdf")
@@ -129,3 +144,4 @@ exports.htmlToPdf = htmlToPdf
 exports.generatePdfCover = generatePdfCover
 exports.catPdf = catPdf
 exports.listFile = listFile
+exports.textToPDF = textToPDF

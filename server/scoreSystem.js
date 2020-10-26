@@ -11,6 +11,7 @@ async function getScoreDetail(work_code, usr) {
     if (!("score" in ans[usr])) ans[usr]["score"] = -2 // score 不存在说明学生未提交作业
     return ans[usr]
 }
+//setScoreByWorkCode("Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",[{usr:"181090808",score:100,remark:"good"}]).then((res)=>console.log("ok"))
 async function setScoreByWorkCode(work_code, updateTarget) {
     // updateTarget=[{usr,score,remark},{},...]
     let json = await getScoreByWorkCode(work_code)

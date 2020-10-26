@@ -206,7 +206,7 @@ router.post('/submit_work', async (ctx, next) => {
         let catPdf = await fsm.catPdf("./__tmp_appjs_catPDF.pdf", fengmianPDF, pdfName)
         // 添加水印
         let watermarkText = `  
-        <font color="red">————————————【${usrInfo["usr"]}_${usrInfo["name"]}】————————————</font>
+        ${usrInfo["usr"]}_${usrInfo["name"]}
         `
         let donPdf = await fsm.pdfAddWatermark(catPdf, watermarkText, "./__tmp_appjs_finalPdf.pdf")
         fs.unlinkSync(fengmianPDF)
