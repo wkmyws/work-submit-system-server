@@ -6,6 +6,10 @@ const path = require('path')
 const exec = util.promisify(require('child_process').exec);  // uti
 const watermark = require('image-watermark');
 const { createCanvas, loadImage } = require('canvas')
+const pdf = require('html-pdf');
+
+
+
 function rm_rf(path) {
     if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach((file) => {
@@ -49,14 +53,12 @@ async function wordToPdf(wordPath, pdfPath) {
     }
     return pdfPath
 }
-function test(url) {
-    watermark.embedWatermark(url, { 'text': 'sample watermark' });
-}
+
 
 async function pdfAddWatermark(url, watermark, newPdfUrl) {
     const tmpFileUrl = "./__tmp_server_mdWatermark.pdf"
     //await htmlToPdf(watermark, tmpFileUrl)
-    await textToPDF(watermark,tmpFileUrl)
+    await textToPDF(watermark, tmpFileUrl)
     await new Promise((resolve, reject) => {
         pdftk.input(url)
             .background(tmpFileUrl)
@@ -82,30 +84,28 @@ async function mdToPdf(mdString, url) {
     return url
 }
 
-async function htmlToPdf(htmlString, url) {
-    const tmpFileUrl = "./__tmp_fs_more_tmp.html"
-    fs.writeFileSync(tmpFileUrl, htmlString)
-    try {
-        const { stdout, stderr } = await exec("pandoc " + tmpFileUrl + " -o " + url + " --latex-engine=xelatex -V mainfont='SimSun'")
-    } catch (err) { console.log(err) }
-    fs.unlinkSync(tmpFileUrl)
-    return url
-}
+// async function htmlToPdf(htmlString, url) {
+//     const tmpFileUrl = "./__tmp_fs_more_tmp.html"
+//     fs.writeFileSync(tmpFileUrl, htmlString)
+//     try {
+//         const { stdout, stderr } = await exec("pandoc " + tmpFileUrl + " -o " + url + " --latex-engine=xelatex -V mainfont='SimSun'")
+//     } catch (err) { console.log(err) }
+//     fs.unlinkSync(tmpFileUrl)
+//     return url
+// }
 
 async function generatePdfCover(url, usr, name = "", work_class = "", work_no = "") {
-    const md =
-        `
-> 
+    const html =
+        `<div style="margin-top: 30%;padding: 5%;margin-left: 10%;margin-right: 10%;"><table style="font-size: 20px;" width="100%" border="0" align="center" cellpadding="0" cellspacing="0"><caption><h1>南京审计大学</h1></caption><tr><td>&nbsp</td></tr><tr><td>&nbsp</td></tr><tr align="center"><td>学 号：</td><td>${usr}</td></tr><tr><td>&nbsp</td></tr><tr align="center"><td>姓 名：</td><td>${name}</td></tr><tr><td>&nbsp</td></tr><tr align="center"><td>班 级：</td><td>${work_class}</td></tr><tr><td>&nbsp</td></tr><tr align="center"><td>作业序号：</td><td>${work_no}</td></tr></table></div>`
+    //return await mdToPdf(md, url)
+    return new Promise((resolve, reject) => {
+        pdf.create(html, {}).toFile(url, function (err, res) {
+            if (err) return reject(err);
+            return resolve(url)
+        });
+    })
 
-| 学校 | 南京审计大学 |
-| -- | -- |
-| 学号 | ${usr} |
-| 姓名 | ${name} |
-| 班级 | ${work_class} |
-| 作业序号 | ${work_no} |
 
-`
-    return await mdToPdf(md, url)
 }
 async function catPdf(target, A, B) {
     let order = `pdftk A=${A} B=${B} cat A B output ${target}`
@@ -140,7 +140,7 @@ exports.rm_rf = rm_rf
 exports.wordToPdf = wordToPdf
 exports.pdfAddWatermark = pdfAddWatermark
 exports.mdToPdf = mdToPdf
-exports.htmlToPdf = htmlToPdf
+// exports.htmlToPdf = htmlToPdf
 exports.generatePdfCover = generatePdfCover
 exports.catPdf = catPdf
 exports.listFile = listFile

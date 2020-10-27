@@ -50,7 +50,7 @@ POST http://47.96.235.211:3000/download_assignments/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzUwOTAzOSwiZXhwIjoxNjAzNTEwODM5fQ.8Ag9BjuVWj350OKrb0qabCAyIsjqp8KQqrjW-a54bBM",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzYzNjgyNywiZXhwIjoxNjAzNjM4NjI3fQ.lUdOmMvRYdmij_GSDDbmMgtbBWVVoKdA8SyfsMxuvbk",
     "work_code": "Uo9tRt9hNsvXRMKYEY93wAx2jwAY08YmYTsx1oQrx1YPMnlRcSYEY9qPM5ZQ6LoCY8i8dTlScjVT6bjPI8wCJOmCp8vD3anC3OoCND"
 }
 
