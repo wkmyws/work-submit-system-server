@@ -399,7 +399,14 @@ router.post('/preview_assignment', async (ctx, next) => {
     }
     // assert(pdf only)
     let p = ("./work/" + work_code + "/" + target + "/")
-    p = Array.from(fsm.listFile(p)).filter(v => /\.pdf$/.test(v))[0]
+    p = Array.from(fsm.listFile(p)).filter(v => /\.pdf$/.test(v))
+    if (p.length == 0) {
+        return ctx.body = {
+            code: 51,
+            ctx: ctx.myToken
+        }
+    }
+    p = p[0]
     let tmpDownloadUrl = path.join("public/tmp/", path.basename(p))
     fs.copyFileSync(p, tmpDownloadUrl)
     // setTimeout(() => {

@@ -4,7 +4,7 @@ content-type: application/json
 
 {
     "usr": "181090808",
-    "pwd": "000"
+    "pwd": ""
 }
 
 ### login 测试
@@ -97,6 +97,7 @@ POST http://47.96.235.211:3000/preview_assignment/ HTTP/1.1
 content-type: application/json
 
 {
-    "work_code":"Uo9tRt9hNsvXRMKYEYBdhApak8dchA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8o8YmYTsx1oQrx1qQMrb8ZenDZ0oD38vD3SqC3OnV1",
-    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiIxODEwOTA4MDgiLCJwd2QiOiIwMDAiLCJpZGVudGlmeSI6MSwiY2xhc3NfbGlzdCI6IltcInNqMDAxXCIsXCJzajAwM1wiLFwic2owMDVcIl0iLCJuYW1lIjoi5Y-y5rSL54KAIiwiaWF0IjoxNjAzMjA0NDM2LCJleHAiOjE2MDMyMDYyMzZ9.3DWAiFmoBxpEi8X_NEHWJ2mJ8nQTXH0dF7aRDlj4VAk"
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzgwNzMwOSwiZXhwIjoxNjAzODA5MTA5fQ.t8TEhfSJ3zdkULQng7KAnKY3--HQeDN1Ij0AGJLnStA",
+    "usr":"18109080"
 }

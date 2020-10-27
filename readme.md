@@ -26,6 +26,7 @@
 
     临时下载文件夹
     
+
 * /client
 
   B端应用
@@ -375,4 +376,25 @@ score_detail={
   remark
 }
 
+```
+
+### POST /get_stu_usr_by_workcode
+
+> 获取此作业码对应的所有学生账户名称
+
+``` 
+{
+  token,
+  work_code,
+}
+```
+
+``` 
+{
+  token,
+  code,
+  list,
+}
+
+// list=["stu1","stu2",...]
 ```
