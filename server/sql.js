@@ -136,6 +136,17 @@ async function generateFileName(usr, work_code) {
     return (format.join("_"))
 }
 
+async function getStuByWorkCode(work_code) {
+    // !!!!!!!! 查找班级直接like，有毒！！！！！！
+    let list = []
+    let work_class = await query("select work_class from work where work_code=?", [work_code])
+    if (work_class.length == 0) return list
+    work_class = work_class[0]["work_class"]
+    console.log(work_class)
+    let stuArr = await query("select usr from login where identify='1' and class_list like ?;", [`%\"${work_class}\"%`])
+    stuArr = stuArr.map(v => v["usr"])
+    return stuArr
+}
 exports.query = query
 exports.login = login
 exports.addWork = addWork
@@ -150,3 +161,4 @@ exports.getClassList = getClassList
 exports.getAssignmentsListByClass = getAssignmentsListByClass
 exports.usrInfo = usrInfo
 exports.generateFileName = generateFileName
+exports.getStuByWorkCode = getStuByWorkCode

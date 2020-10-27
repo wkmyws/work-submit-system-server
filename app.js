@@ -426,7 +426,8 @@ router.post('/grade_assignments', async (ctx, next) => {
     //let usrInfo = await Token.detail(ctx.myToken)
     if (Token.isAdmin(ctx.myToken) == false) {
         return ctx.body = {
-            code: 2
+            code: 2,
+            token: ctx.myToken
         }
     }
     let work_code = ctx.request.body["work_code"]
@@ -452,6 +453,22 @@ router.post('/get_score', async (ctx, next) => {
     return ctx.body = {
         code: 0,
         score_detail: ans,
+        token: ctx.myToken
+    }
+})
+
+router.post('/get_stu_usr_by_workcode', async (ctx, next) => {
+    if (Token.isAdmin(ctx.myToken) == false) {
+        return ctx.body = {
+            code: 2,
+            token: ctx.myToken
+        }
+    }
+    let work_code = ctx.request.body["work_code"]
+    let list = await sql.getStuByWorkCode(work_code)
+    return ctx.body = {
+        code: 0,
+        list: list,
         token: ctx.myToken
     }
 })
