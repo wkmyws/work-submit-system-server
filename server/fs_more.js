@@ -7,7 +7,7 @@ const exec = util.promisify(require('child_process').exec);  // uti
 const watermark = require('image-watermark');
 const { createCanvas, loadImage } = require('canvas')
 const pdf = require('html-pdf');
-
+const base62x = require('base62x')
 
 
 function rm_rf(path) {
@@ -29,6 +29,7 @@ function rm_rf(path) {
 
 function listFile(dir) {
     let list = []
+    if (fs.existsSync(dir) == false) return list
     let arr = fs.readdirSync(dir);
     arr.forEach(async (item) => {
         let fullpath = path.join(dir, item);
@@ -43,20 +44,23 @@ function listFile(dir) {
 }
 
 
-async function wordToPdf(wordPath, pdfPath) {
+async function wordToPdf(wordPath) {
+    let ans = path.join(path.dirname(wordPath), path.basename(wordPath).replace(/\.docx?$/, ".pdf"))
     try {
-        const { stdout, stderr } = await exec('libreoffice --headless --convert-to pdf --outdir ' + pdfPath + ' ' + wordPath);
+        const { stdout, stderr } = await exec('libreoffice --headless --convert-to pdf --outdir ' + path.dirname(wordPath) + ' ' + wordPath);
         //console.log('stdout:', stdout);
         //console.log('stderr:', stderr);
     } catch (err) {
+        console.log('------------------')
         console.log(err)
+        console.log('------------')
     }
-    return pdfPath
+    console.log(ans)
+    return ans
 }
 
-
 async function pdfAddWatermark(url, watermark, newPdfUrl) {
-    const tmpFileUrl = "./__tmp_server_mdWatermark.pdf"
+    const tmpFileUrl = `./___mdWatermark${base62x.encode(newPdfUrl)}.pdf`
     //await htmlToPdf(watermark, tmpFileUrl)
     await textToPDF(watermark, tmpFileUrl)
     await new Promise((resolve, reject) => {
@@ -70,7 +74,7 @@ async function pdfAddWatermark(url, watermark, newPdfUrl) {
                 return reject()
             })
     })
-    fs.unlinkSync(tmpFileUrl)
+    fs.unlink(tmpFileUrl, () => { })
     return newPdfUrl
 }
 
@@ -120,15 +124,20 @@ async function catPdf(target, A, B) {
 }
 async function textToPDF(text, pdfUrl) {
     return new Promise((resolve, reject) => {
-        watermark.embedWatermark(path.join(__dirname, "__water_tmp.jpg"), { 'text': text, 'font': 'SimSun' });
-        const canvas = createCanvas(500, 500, 'pdf')
-        const ctx = canvas.getContext('2d')
-        loadImage(path.join(__dirname, "watermark.jpg")).then((image) => {
-            ctx.drawImage(image, 0, 0)
-            var buff = canvas.toBuffer()
-            fs.writeFileSync(pdfUrl, buff)
-            return resolve(pdfUrl)
-        }).catch(err => reject(err))
+        let tmpFile = `${base62x.encode(pdfUrl)}.jpg`
+        watermark.embedWatermarkWithCb(path.join(__dirname, "__water_tmp.jpg"), { dstPath: tmpFile, 'text': text, 'font': 'SimSun' }, (err) => {
+            const canvas = createCanvas(500, 500, 'pdf')
+            const ctx = canvas.getContext('2d')
+            loadImage(path.join(tmpFile)).then((image) => {
+                ctx.drawImage(image, 0, 0)
+                var buff = canvas.toBuffer()
+                fs.writeFileSync(pdfUrl, buff)
+                fs.unlink(tmpFile, () => { })
+                return resolve(pdfUrl)
+            }).catch(err => reject(err))
+        });
+        //watermark.embedWatermark(path.join(__dirname, "__water_tmp.jpg"), { 'text': text, 'font': 'SimSun' });
+
     })
 }
 

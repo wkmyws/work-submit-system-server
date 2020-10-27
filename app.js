@@ -16,6 +16,7 @@ const fsm = require('./server/fs_more');
 const app = new Koa()
 const router = new Router()
 const scoreSystem = require('./server/scoreSystem')
+const base62x = require('base62x')
 
 router.get('/login', async (ctx, next) => {
     ctx.body = "请使用POST方法"
@@ -164,55 +165,67 @@ router.post('/submit_work', async (ctx, next) => {
         code: 41,
         token: ctx.myToken
     }
-    try {
+
+
+
+    //创建成绩表记录 成绩初始为-2表示学生未提交作业，详见readme/作业分数说明
+    await scoreSystem.setScoreByWorkCode(work_code, [{ usr: usrInfo.usr, score: -1 }])
+    // 提交后的文件操作
+    let reader = fs.createReadStream(file.path)
+    //let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
+    // 覆盖提交 会先删除当前用户之前创建的文件夹及子文件
+    if (fs.existsSync(path.join('./', 'work', work_code, usrInfo["usr"]))) {
+        fsm.rm_rf(path.join('./', 'work', work_code, usrInfo["usr"]))
+    }
+    // 重新创建用户文件夹
+    fs.mkdirSync(path.join('./', 'work', work_code, usrInfo["usr"]))
+    // 重命名!!!
+    let baseName = (await sql.generateFileName(usrInfo["usr"], work_code))
+    let fileName = baseName + ".docx"
+    let filePath = path.join('./', 'work', work_code, usrInfo["usr"], fileName)
+    let upStream = fs.createWriteStream(filePath)
+    reader.pipe(upStream)
+
+    // word 转 pdf
+    let pdfURL = await fsm.wordToPdf(filePath)
+    if (fs.existsSync(pdfURL) == false) {
         return ctx.body = {
-            code: 0,
-            msg: "上传成功！",
+            code: 42,
             token: ctx.myToken
         }
-    } finally {
-        //创建成绩表记录 成绩初始为-2表示学生未提交作业，详见readme/作业分数说明
-        await scoreSystem.setScoreByWorkCode(work_code, [{ usr: usrInfo.usr, score: -1 }])
-        // 提交后的文件操作
-        let reader = fs.createReadStream(file.path)
-        //let filePath = path.join('./', 'work', work_code) + `/${usrInfo["usr"]}`
-        // 覆盖提交 会先删除当前用户之前创建的文件夹及子文件
-        if (fs.existsSync(path.join('./', 'work', work_code, usrInfo["usr"]))) {
-            fsm.rm_rf(path.join('./', 'work', work_code, usrInfo["usr"]))
-        }
-        // 重新创建用户文件夹
-        fs.mkdirSync(path.join('./', 'work', work_code, usrInfo["usr"]))
-        // 重命名!!!
-        let baseName = (await sql.generateFileName(usrInfo["usr"], work_code))
-        let fileName = baseName + ".docx"
-        let filePath = path.join('./', 'work', work_code, usrInfo["usr"], fileName)
-        let upStream = fs.createWriteStream(filePath)
-        reader.pipe(upStream)
-        // word 转 pdf
-        await fsm.wordToPdf(filePath, path.dirname(filePath))
-        // 删除原先的word文稿
-        //fs.unlinkSync(filePath)
-        // 加水印
-        let pdfName = path.resolve(path.dirname(filePath), path.basename(filePath).replace(/\..+$/, ".pdf"))
-        // 生成封面文件
-        let fengmianPDF = await fsm.generatePdfCover(
-            "./__tmp_appjs_generatePdf.pdf",
-            usrInfo["usr"],
-            usrInfo["name"],
-            work_detail["work_class"],
-            work_detail["no"]
-        )
-        // 合并pdf
-        let catPdf = await fsm.catPdf("./__tmp_appjs_catPDF.pdf", fengmianPDF, pdfName)
-        // 添加水印
-        let watermarkText = `  
+    }
+    // 删除原先的word文稿
+    //fs.unlinkSync(filePath)
+    // 加水印
+    //let pdfName = path.resolve(path.dirname(filePath), path.basename(filePath).replace(/\..+$/, ".pdf"))
+    let uniqueMark = base62x.encode(path.basename(pdfURL))
+    // 生成封面文件
+    let fengmianPDF = await fsm.generatePdfCover(
+        `./__genPdf${uniqueMark}.pdf`,
+        usrInfo["usr"],
+        usrInfo["name"],
+        work_detail["work_class"],
+        work_detail["no"]
+    )
+    // 合并pdf
+    let catPdf = await fsm.catPdf(`./__catPDF${uniqueMark}.pdf`, fengmianPDF, pdfURL)
+    // 添加水印
+    let watermarkText = `  
         ${usrInfo["usr"]}_${usrInfo["name"]}
         `
-        let donPdf = await fsm.pdfAddWatermark(catPdf, watermarkText, "./__tmp_appjs_finalPdf.pdf")
-        fs.unlinkSync(fengmianPDF)
-        fs.unlinkSync(catPdf)
-        fs.renameSync(donPdf, path.resolve(path.dirname(filePath), baseName + ".pdf"))
+    let donPdf = await fsm.pdfAddWatermark(catPdf, watermarkText, `./__finalPdf${uniqueMark}.pdf`)
+    fs.unlink(fengmianPDF, () => { })
+    fs.unlink(catPdf, () => { })
+    fs.renameSync(donPdf, pdfURL)
+
+
+
+    return ctx.body = {
+        code: 0,
+        msg: "上传成功！",
+        token: ctx.myToken
     }
+
 
 })
 

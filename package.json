@@ -3,6 +3,7 @@
     "antd": "^4.6.6",
     "archiver": "^5.0.2",
     "axios": "^0.20.0",
+    "base62x": "^1.1.0",
     "canvas": "^2.6.1",
     "html-pdf": "^2.2.0",
     "image-watermark": "0.0.7",
