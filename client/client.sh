@@ -1,1 +1,1 @@
-serve dist -p 80
+serve dist/ -p 80
