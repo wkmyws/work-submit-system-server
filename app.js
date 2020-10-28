@@ -197,10 +197,10 @@ router.post('/submit_work', async (ctx, next) => {
     // word 转 pdf
     let pdfURL = await fsm.wordToPdf(filePath)
     if (fs.existsSync(pdfURL) == false) {
-        return ctx.body = {
-            code: 52,
-            token: ctx.myToken
-        }
+        // return ctx.body = {
+        //     code: 52,
+        //     token: ctx.myToken
+        // }
     }
     const delayRun = async () => {
         // 删除原先的word文稿
@@ -410,14 +410,15 @@ router.post('/preview_assignment', async (ctx, next) => {
     }
     // assert(pdf only)
     let p = ("./work/" + work_code + "/" + target + "/")
-    p = Array.from(fsm.listFile(p)).filter(v => /\.pdf$/.test(v))
-    if (p.length == 0) {
-        return ctx.body = {
+    let pp = Array.from(fsm.listFile(p)).filter(v => /\.pdf$/.test(v))
+    if (pp.length == 0) {
+        pp = Array.from(fsm.listFile(p)).filter(v => /\.docx?$/.test(v))
+        if (pp.length == 0) return ctx.body = {
             code: 51,
             ctx: ctx.myToken
         }
     }
-    p = p[0]
+    p = pp[0]
     let tmpDownloadUrl = path.join("public/tmp/", path.basename(p))
     fs.copyFileSync(p, tmpDownloadUrl)
     // setTimeout(() => {
