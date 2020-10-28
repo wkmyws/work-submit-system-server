@@ -45,6 +45,8 @@ function listFile(dir) {
 
 
 async function wordToPdf(wordPath) {
+    // 若已经为pdf则不需要转换
+    if (path.extname(wordPath).toLocaleLowerCase() == ".pdf") return wordPath
     let ans = path.join(path.dirname(wordPath), path.basename(wordPath).replace(/\.docx?$/, ".pdf"))
     try {
         const { stdout, stderr } = await exec('libreoffice --headless --convert-to pdf --outdir ' + path.dirname(wordPath) + ' ' + wordPath);

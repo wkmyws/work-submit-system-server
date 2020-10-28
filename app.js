@@ -174,7 +174,7 @@ router.post('/submit_work', async (ctx, next) => {
     let reader = fs.createReadStream(file.path)
     let fileExtName = path.extname(file.name).toLowerCase()
     // 判别是否为word
-    if (fileExtName != ".docx" && fileExtName != ".doc") return ctx.body = {
+    if (fileExtName != ".docx" && fileExtName != ".doc" && fileExtName != ".pdf") return ctx.body = {
         code: 42,
         token: ctx.myToken,
         fileExtName
