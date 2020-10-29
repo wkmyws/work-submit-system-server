@@ -98,7 +98,14 @@ router.post('/publish_assignments', async (ctx, next) => {
 // 删除发布的作业
 router.post('/delete_assignments', async (ctx, next) => {
 
+
     let work_code = ctx.request.body["work_code"]
+    // mark to del
+    if (work_code == "Uo9tRt9hNsvXRMKYEYBfd83ciOBbY8Rcdf0jvfoVvBYjvBsSvBYQ8YmYTsx1oQrx1YPMnlRcSYEY9uUdaYB29tRt9hNtHfRMKYEZ4sC3CuC38nEJOpCJDx1") {
+        return ctx.body = {
+            code: -1
+        }
+    }
     if (work_code == null) {
         return ctx.body = {
             code: 23,
