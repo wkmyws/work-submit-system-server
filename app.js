@@ -292,6 +292,21 @@ router.post('/get_assignments_detail', async (ctx, next) => {
     if (!work_code) return ctx.body = {
         code: 4
     }
+    let stuList = []
+    if (Token.isAdmin(ctx.myToken)) {
+        // 若是老师身份则额外返回学生列表
+        stuList = await sql.getStuByWorkCode(work_code)
+        let ScoreListAns = await scoreSystem.getScoreByWorkCode(work_code)
+        stuList = await Promise.all(stuList.map(async (v) => {
+            let tmpAns = await scoreSystem.getScoreDetail(work_code, v, ScoreListAns)
+            return {
+                usr: v,
+                score: tmpAns["score"],
+                remark: tmpAns["remark"] || "",
+                submitStat: (tmpAns["score"] - 0) >= -1,
+            }
+        }))
+    }
     let res = await sql.getWorkDetailsByWorkCode(work_code)
     ctx.body = {
         code: 0,
@@ -300,7 +315,8 @@ router.post('/get_assignments_detail', async (ctx, next) => {
         work_belong: res["work_belong"],
         work_desc: res["work_desc"],
         class: res["work_class"],
-        work_deadline: res["work_deadline"]
+        work_deadline: res["work_deadline"],
+        stu_list: stuList,
     }
 })
 
@@ -313,7 +329,7 @@ router.post('/reset_password', async (ctx, next) => {
     if (usrInfo["usr"] == usr) {
         // 当前用户修改密码
         msg = await sql.resetPassword(usr, newPwd)
-    } else if (sql.isAdminByUsr(usr) == false
+    } else if ((await sql.isAdminByUsr(usr)) == false
         && token.isAdmin(ctx.myToken) == true) {
         // 管理员修改非管理员密码
         msg = await sql.resetPassword(usr, newPwd)

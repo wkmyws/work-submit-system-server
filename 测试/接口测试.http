@@ -60,7 +60,7 @@ POST http://47.96.235.211:3000/get_published_assignments_list/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJhZG1pbiIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJpYXQiOjE2MDE1OTY4NDcsImV4cCI6MTYwMTU5ODY0N30.yup-3XgrJPeGRhXLkgpWmCXCv0lLHs_tK1WXFXp3OQM",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzkzNzQzMiwiZXhwIjoxNjAzOTM5MjMyfQ.pVqF4zVMN334c57QeOHAJRtmnuSlh1pwyPH3L2kjgdc",
     "work_code": "Uo9tRt9hNsvXRMKYEYBdhApak83chA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCJ0mDpWnEJOtV1"
 }
 
@@ -70,8 +70,8 @@ POST http://47.96.235.211:3000/get_assignments_detail/ HTTP/1.1
 content-type: application/json
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ1c2VyIiwicHdkIjoiMDAwIiwiaWRlbnRpZnkiOjEsImlhdCI6MTYwMTMwNjE2NCwiZXhwIjoxNjAxMzA3OTY0fQ.nGE2NF9oyqV8pQVbXDAQBNKQZl6X5S2gptM5GWd9q2c",
-    "work_code": "Uo9tRt9hNsvXRMKYEYBdhApakepchA7alPpak9eYB29tRt9hNs9bR6x1kPo8w8c5aRMbk8YmYTsx1oQrx1qQMrb8ZenDZ0nCZaqDJ4uE34nV1"
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzkzNzQzMiwiZXhwIjoxNjAzOTM5MjMyfQ.pVqF4zVMN334c57QeOHAJRtmnuSlh1pwyPH3L2kjgdc",
+    "work_code": "Uo9tRt9hNsvXRMKYEYBfd83ciOBbY8Rcdf0jvfoVvBYjvBsSvBYQ8YmYTsx1oQrx1YPMnlRcSYEY9uUdaYB29tRt9hNtHfRMKYEZ4sC3CuC38nEJOpCJDx1"
 }
 
 ### 修改密码

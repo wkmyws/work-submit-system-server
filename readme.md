@@ -176,6 +176,8 @@
 ### POST /get_assignments_detail
 
 > 获取作业码对应的详细作业信息
+> 
+> 若是老师身份，则会额外返回 stu_list 参数
 
 ``` json
 {
@@ -194,7 +196,8 @@
     work_desc,
     class,
     no,
-    work_deadline
+    work_deadline,
+    stu_list=[ {usr,score,remark,submitStat}, ... ],
 }
 ```
 
