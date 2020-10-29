@@ -228,8 +228,8 @@ router.post('/submit_work', async (ctx, next) => {
         fs.renameSync(donPdf, pdfURL)
     }
 
-    setTimeout(delayRun, 0)
-    //await delayRun()
+    //setTimeout(delayRun, 0)
+    await delayRun()
 
     return ctx.body = {
         code: 0,
