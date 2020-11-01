@@ -251,11 +251,11 @@ router.post('/submit_work', async (ctx, next) => {
 router.post('/download_assignments', async (ctx, next) => {
     let work_code = ctx.request.body["work_code"]
     // mark to del
-    if (work_code == "Uo9tRt9hNsvXRMKYEYBfd83ciOBbY8Rcdf0jvfoVvBYjvBsSvBYQ8YmYTsx1oQrx1YPMnlRcSYEY9uUdaYB29tRt9hNtHfRMKYEZ4sC3CuC38nEJOpCJDx1") {
-        return ctx.body = {
-            code: -1
-        }
-    }
+    // if (work_code == "Uo9tRt9hNsvXRMKYEYBfd83ciOBbY8Rcdf0jvfoVvBYjvBsSvBYQ8YmYTsx1oQrx1YPMnlRcSYEY9uUdaYB29tRt9hNtHfRMKYEZ4sC3CuC38nEJOpCJDx1") {
+    //     return ctx.body = {
+    //         code: -1
+    //     }
+    // }
     if (work_code == null || (await sql.haveWork(work_code)) == false) {
         return ctx.body = {
             code: 23,
@@ -428,12 +428,12 @@ router.post('/preview_assignment', async (ctx, next) => {
     let usrInfo = await Token.detail(ctx.myToken)
     let target = ctx.request.body["usr"]
     let work_code = ctx.request.body["work_code"]
-    // mark to del
-    if (usrInfo["identify"] == 0 && work_code == "Uo9tRt9hNsvXRMKYEYBfd83ciOBbY8Rcdf0jvfoVvBYjvBsSvBYQ8YmYTsx1oQrx1YPMnlRcSYEY9uUdaYB29tRt9hNtHfRMKYEZ4sC3CuC38nEJOpCJDx1") {
-        return ctx.body = {
-            code: -1
-        }
-    }
+    // // mark to del
+    // if (usrInfo["identify"] == 0 && work_code == "Uo9tRt9hNsvXRMKYEYBfd83ciOBbY8Rcdf0jvfoVvBYjvBsSvBYQ8YmYTsx1oQrx1YPMnlRcSYEY9uUdaYB29tRt9hNtHfRMKYEZ4sC3CuC38nEJOpCJDx1") {
+    //     return ctx.body = {
+    //         code: -1
+    //     }
+    // }
     if (usrInfo["identify"] == 1) {
         // 学生
         target = usrInfo["usr"]
@@ -450,7 +450,7 @@ router.post('/preview_assignment', async (ctx, next) => {
         pp = Array.from(fsm.listFile(p)).filter(v => /\.docx?$/.test(v))
         if (pp.length == 0) return ctx.body = {
             code: 51,
-            ctx: ctx.myToken
+            token: ctx.myToken
         }
     }
     p = pp[0]
