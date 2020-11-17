@@ -30,7 +30,7 @@ async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
         let sc=scoreAns[e]["score"]-0;
         if(sc==-1)sc="未打分"
         else if(sc<-1)sc="未提交"
-        xlsxObj[0].data.push([e+"", sc+""])
+        xlsxObj[0].data.push([e, sc])
     }
     fs.writeFileSync(path.resolve(__dirname, '../work', work_code, ["成绩表",work_detail["work_class"], work_detail["work_name"], work_detail["no"]].join("_")+".xlsx"), xlsx.build(xlsxObj), "binary");
     // 只下载pdf
