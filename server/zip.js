@@ -6,6 +6,8 @@ const fs = require('fs')
 const archiver = require('archiver')
 const listFile = require('./fs_more').listFile
 const sql = require('./sql')
+const xlsx = require('node-xlsx');
+const sstm = require('./scoreSystem')
 
 async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
     // expire default=10min
@@ -18,8 +20,24 @@ async function zipAndDownload(work_code, expire = 10 * 60 * 1000) {
     tmpFile += ".zip"
     let url = path.resolve(__dirname, '../public', 'tmp', tmpFile)
     let list = listFile(path.resolve(__dirname, '../work', work_code))
+    // 生成成绩表
+    let scoreAns = await sstm.getScoreByWorkCode(work_code)
+    let xlsxObj = [{
+        name: '成绩表',
+        data: [["学号", "成绩"]],
+    }]
+    for (let e in scoreAns) {
+        let sc=scoreAns[e]["score"]-0;
+        if(sc==-1)sc="未打分"
+        else if(sc<-1)sc="未提交"
+        xlsxObj[0].data.push([e+"", sc+""])
+    }
+    fs.writeFileSync(path.resolve(__dirname, '../work', work_code, ["成绩表",work_detail["work_class"], work_detail["work_name"], work_detail["no"]].join("_")+".xlsx"), xlsx.build(xlsxObj), "binary");
     // 只下载pdf
-    list = list.filter((v) => path.extname(v).toLowerCase() == ".pdf")
+    list = list.filter((v) => {
+        let vvv = path.extname(v).toLowerCase()
+        return [".pdf", ".xlsx"].some(vv => vv == vvv)
+    })
     await pkg(list, url)
     // zipper.sync
     //     .zip(path.resolve('work', work_code))
