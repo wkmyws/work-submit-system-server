@@ -188,7 +188,15 @@ router.post('/submit_work', async (ctx, next) => {
     // 重新创建用户文件夹
     fs.mkdirSync(path.join('./', 'work', work_code, usrInfo["usr"]))
     //写入文件
-    for (let file of files) {
+    let f_=[]
+    try{
+        for(let file of files){
+            f_.push(file)
+        }
+    }catch(ex){
+        f_.push(files)
+    }
+    for (let file of f_) {
         // 提交后的文件操作
         let reader = fs.createReadStream(file.path)
         let fileExtName = path.extname(file.name).toLowerCase()
