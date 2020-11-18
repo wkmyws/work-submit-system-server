@@ -4,7 +4,17 @@ content-type: application/json
 
 {
     "usr": "181090808",
-    "pwd": ""
+    "pwd": "123"
+}
+
+### 附件下载测试
+POST http://47.96.235.211:3000/download_assignments_plus/ HTTP/1.1
+content-type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiIxODEwOTA4MDgiLCJwd2QiOiIxMjMiLCJpZGVudGlmeSI6MSwiY2xhc3NfbGlzdCI6IltcInNqMDAxXCIsXCJzajAwM1wiLFwic2owMDVcIixcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiXSIsIm5hbWUiOiLlj7LmtIvngoAiLCJpYXQiOjE2MDU3MTQxMDIsImV4cCI6MTYwNTcxNTkwMn0.j2PH9QILYvR8AyzPxenoFscMS8cPDjhxc8Ji4PLW6n4",
+    "work_code": "Uo9tRt9hNsvXRMKYEYBbbw7bbw7bbw4YB29tRt9hNs9bR6x1kPo8w8dXwUI8i8dTlScjVT6bjPI8wCJOmDJSmEJGnDpatDtD",
+    "usr":"181090808"
 }
 
 ### login 测试

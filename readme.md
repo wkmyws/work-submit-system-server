@@ -401,3 +401,27 @@ score_detail={
 
 // list=["stu1","stu2",...]
 ```
+
+
+### POST /download_assignments_plus
+
+> 获取此作业码对应的学生上传的附件文件
+> 
+> 省却usr时默认下载所有学生提交的附件
+
+``` 
+{
+  token,
+  work_code,
+  usr
+}
+```
+
+``` 
+{
+  token,
+  code,
+  download_url,
+}
+
+```
