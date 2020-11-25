@@ -16,6 +16,19 @@ async function zipByFolder(work_code, usr = "", expire = 10 * 60 * 1000) {
     tmpFile = [usr + "附件", work_detail["work_class"], work_detail["work_name"], work_detail["no"]].join("_")
     tmpFile += ".zip"
     let url = path.resolve(__dirname, '../public', 'tmp', tmpFile)
+    // 生成成绩表
+    let scoreAns = await sstm.getScoreByWorkCode(work_code)
+    let xlsxObj = [{
+        name: '成绩表',
+        data: [["学号", "成绩"]],
+    }]
+    for (let e in scoreAns) {
+        let sc = scoreAns[e]["score"] - 0;
+        if (sc == -1) sc = "未打分"
+        else if (sc < -1) sc = "未提交"
+        xlsxObj[0].data.push([e, sc])
+    }
+    fs.writeFileSync(path.resolve(__dirname, '../work', work_code, ["成绩表", work_detail["work_class"], work_detail["work_name"], work_detail["no"]].join("_") + ".xlsx"), xlsx.build(xlsxObj), "binary");
     zipper.sync
         .zip(path.resolve(__dirname, '../work', work_code, usr))
         .compress()
