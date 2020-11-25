@@ -3,8 +3,8 @@ POST http://47.96.235.211:3000/login/ HTTP/1.1
 content-type: application/json
 
 {
-    "usr": "181090808",
-    "pwd": "123"
+    "usr": "xzy",
+    "pwd": "xzyxzy"
 }
 
 ### 附件下载测试
@@ -110,4 +110,14 @@ content-type: application/json
     "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ0ZWFjaGVyMSIsInB3ZCI6IjEyMyIsImlkZW50aWZ5IjowLCJjbGFzc19saXN0IjoiW1wic2owMDFcIixcInNqMDAyXCJdIiwibmFtZSI6IuWUlOilv-i_quilvyIsImlhdCI6MTYwMzgwNzMwOSwiZXhwIjoxNjAzODA5MTA5fQ.t8TEhfSJ3zdkULQng7KAnKY3--HQeDN1Ij0AGJLnStA",
     "usr":"18109080"
+}
+
+### 获取
+POST http://47.96.235.211:3000/watermark_text_get/ HTTP/1.1
+content-type: application/json
+
+{
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "text":"18109080"
 }

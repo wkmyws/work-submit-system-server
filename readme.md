@@ -446,7 +446,7 @@ score_detail={
 
 ```
 
-### GET /watermark_text
+### POST /watermark_text_get
 
 > 自定义水印获取
 

@@ -602,7 +602,7 @@ router.post('/watermark_text', async (ctx, next) => {
         token: ctx.myToken
     }
 })
-router.get('/watermark_text', async (ctx, next) => {
+router.post('/watermark_text_get', async (ctx, next) => {
     if (Token.isAdmin(ctx.myToken) == false) {
         return ctx.body = {
             code: 2,
