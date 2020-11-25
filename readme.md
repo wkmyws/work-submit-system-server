@@ -425,3 +425,42 @@ score_detail={
 }
 
 ```
+
+
+### POST /watermark_text
+
+> 自定义水印上传
+
+``` 
+{
+  token,
+  text,//省缺则改为默认设置
+}
+```
+
+``` 
+{
+  token,
+  code,
+}
+
+```
+
+### GET /watermark_text
+
+> 自定义水印获取
+
+``` 
+{
+  token,
+}
+```
+
+``` 
+{
+  token,
+  code,
+  text
+}
+
+```

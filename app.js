@@ -17,6 +17,10 @@ const app = new Koa()
 const router = new Router()
 const scoreSystem = require('./server/scoreSystem')
 const base62x = require('base62x')
+const Cache = require('./server/cache')
+
+
+const cache = Cache.createCache("./cache")
 
 router.get('/login', async (ctx, next) => {
     ctx.body = "请使用POST方法"
@@ -188,12 +192,12 @@ router.post('/submit_work', async (ctx, next) => {
     // 重新创建用户文件夹
     fs.mkdirSync(path.join('./', 'work', work_code, usrInfo["usr"]))
     //写入文件
-    let f_=[]
-    try{
-        for(let file of files){
+    let f_ = []
+    try {
+        for (let file of files) {
             f_.push(file)
         }
-    }catch(ex){
+    } catch (ex) {
         f_.push(files)
     }
     for (let file of f_) {
@@ -239,7 +243,7 @@ router.post('/submit_work', async (ctx, next) => {
                 // 合并pdf
                 let catPdf = await fsm.catPdf(`./__catPDF${uniqueMark}.pdf`, fengmianPDF, pdfURL)
                 // 添加水印
-                let watermarkText = `  
+                let watermarkText = cache.get("watermarkText") || `  
                     ${usrInfo["usr"]}_${usrInfo["name"]}
                     `
                 let donPdf = await fsm.pdfAddWatermark(catPdf, watermarkText, `./__finalPdf${uniqueMark}.pdf`)
@@ -580,7 +584,37 @@ router.post('/oops', async (ctx, next) => {
     }
     return ctx.body = "上传成功！";
 });
-
+/**
+ * 自定义水印
+ * text
+ */
+router.post('/watermark_text', async (ctx, next) => {
+    if (Token.isAdmin(ctx.myToken) == false) {
+        return ctx.body = {
+            code: 2,
+            token: ctx.myToken
+        }
+    }
+    let txt = ctx.request.body["text"] || ""
+    cache.set({ watermarkText: txt })
+    return ctx.body = {
+        code: 0,
+        token: ctx.myToken
+    }
+})
+router.get('/watermark_text', async (ctx, next) => {
+    if (Token.isAdmin(ctx.myToken) == false) {
+        return ctx.body = {
+            code: 2,
+            token: ctx.myToken
+        }
+    }
+    return ctx.body = {
+        code: 0,
+        token: ctx.myToken,
+        text: cache.get("watermarkText")
+    }
+})
 
 app.use(cors({
     credentials: true,//默认情况下，Cookie不包括在CORS请求之中。设为true，即表示服务器许可Cookie可以包含在请求中
