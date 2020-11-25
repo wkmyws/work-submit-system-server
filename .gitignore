@@ -2,3 +2,5 @@
 node_modules
 /public/tmp/*
 /auto_upload
+cache
+/测试
