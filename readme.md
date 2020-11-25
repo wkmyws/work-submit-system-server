@@ -143,6 +143,7 @@
     token,
     work_code,
     file, // 提交的文件 <file>
+    quick_submit, // 省缺或为false则常规上传，设为true则采用快速上传
 }
 ```
 

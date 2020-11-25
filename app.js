@@ -252,8 +252,15 @@ router.post('/submit_work', async (ctx, next) => {
                 fs.renameSync(donPdf, pdfURL)
             }
 
-            //setTimeout(delayRun, 0)
-            await delayRun()
+            // quick_submit 开关判断
+            let quick_submit = ctx.request.body["quick_submit"] || false
+            if(quick_submit){
+                // 启用快速上传
+                setTimeout(delayRun,0)
+            }else{
+                // 常规上传
+                await delayRun()
+            }
         }
     }
 
