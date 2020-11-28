@@ -1,6 +1,6 @@
-[![](https://img.shields.io/badge/version-2.0-blue)](https://github.com/wkmyws/work-submit-system-server/releases/tag/2.0)
+[![](https://img.shields.io/badge/version-3.0-blue)](https://github.com/wkmyws/work-submit-system-server/releases/tag/2.0)
 [![](https://img.shields.io/badge/license-gpl2-orange)](https://github.com/wkmyws/work-submit-system-server/blob/master/LICENSE)
-[![](https://img.shields.io/badge/coverage-56%25-brightgreen)](https://github.com/wkmyws/work-submit-system-server/tree/master/%E6%B5%8B%E8%AF%95)
+[![](https://img.shields.io/badge/coverage-89%25-brightgreen)](https://github.com/wkmyws/work-submit-system-server/tree/master/%E6%B5%8B%E8%AF%95)
 [![](https://img.shields.io/badge/nodejs-12.9.0-yellowgreen)](https://nodejs.org/)
 [![](https://img.shields.io/badge/koa-2-green)](https://github.com/koajs/koa)
 
