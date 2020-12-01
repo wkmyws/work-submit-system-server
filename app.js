@@ -226,7 +226,7 @@ router.post('/submit_work', async (ctx, next) => {
                 //     token: ctx.myToken
                 // }
             }
-            const delayRun = async () => {
+            const delayRun = async (filePath,pdfURL,usrInfo,work_detail) => {
                 // 删除原先的word文稿
                 //fs.unlinkSync(filePath)
                 // 加水印
@@ -256,7 +256,7 @@ router.post('/submit_work', async (ctx, next) => {
             let quick_submit = ctx.request.body["quick_submit"] || false
             if(quick_submit){
                 // 启用快速上传
-                setTimeout(delayRun,0)
+                setTimeout(((filePath,pdfURL,usrInfo,work_detail)=>{return ()=>{delayRun(filePath,pdfURL,usrInfo,work_detail)}})(filePath,pdfURL,usrInfo,work_detail),0)
             }else{
                 // 常规上传
                 await delayRun()
