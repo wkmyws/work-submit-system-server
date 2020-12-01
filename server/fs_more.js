@@ -49,6 +49,8 @@ async function wordToPdf(wordPath) {
     if (path.extname(wordPath).toLocaleLowerCase() == ".pdf") return wordPath
     let ans = path.join(path.dirname(wordPath), path.basename(wordPath).replace(/\.docx?$/, ".pdf"))
     try {
+        //console.log("开始转换")
+        //console.log('libreoffice --headless --convert-to pdf --outdir ' + path.dirname(wordPath) + ' ' + wordPath)
         const { stdout, stderr } = await exec('libreoffice --headless --convert-to pdf --outdir ' + path.dirname(wordPath) + ' ' + wordPath);
         //console.log('stdout:', stdout);
         //console.log('stderr:', stderr);
@@ -57,7 +59,6 @@ async function wordToPdf(wordPath) {
         console.log(err)
         console.log('------------')
     }
-    console.log(ans)
     return ans
 }
 

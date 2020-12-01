@@ -18,9 +18,20 @@ const router = new Router()
 const scoreSystem = require('./server/scoreSystem')
 const base62x = require('base62x')
 const Cache = require('./server/cache')
+const Que = require('./server/que').Que
 
 
 const cache = Cache.createCache("./cache")
+const convert_que = new Que()
+
+// 判断当前是否处理完所有作业
+router.get('/handleDone', async (ctx, next) => {
+    ctx.body = {
+        code: 0,
+        done: convert_que.done(),
+        left: convert_que.left(),
+    }
+})
 
 router.get('/login', async (ctx, next) => {
     ctx.body = "请使用POST方法"
@@ -219,14 +230,11 @@ router.post('/submit_work', async (ctx, next) => {
             let upStream = fs.createWriteStream(filePath)
             reader.pipe(upStream)
             // word 转 pdf
-            let pdfURL = await fsm.wordToPdf(filePath)
-            if (fs.existsSync(pdfURL) == false) {
-                // return ctx.body = {
-                //     code: 52,
-                //     token: ctx.myToken
-                // }
-            }
-            const delayRun = async (filePath,pdfURL,usrInfo,work_detail) => {
+            //let pdfURL = await fsm.wordToPdf(filePath)
+            // let pdfURL = await convert_que.addSync(async () => await fsm.wordToPdf(filePath))
+            let pdfURL = ""
+            const delayRun = async (filePath, pdfURL, usrInfo, work_detail) => {
+                pdfURL = await convert_que.addSync(async () => await fsm.wordToPdf(filePath))
                 // 删除原先的word文稿
                 //fs.unlinkSync(filePath)
                 // 加水印
@@ -254,19 +262,15 @@ router.post('/submit_work', async (ctx, next) => {
 
             // quick_submit 开关判断
             let quick_submit = ctx.request.body["quick_submit"] || false
-            if(quick_submit){
+            if (quick_submit) {
                 // 启用快速上传
-                setTimeout(((filePath,pdfURL,usrInfo,work_detail)=>{return ()=>{delayRun(filePath,pdfURL,usrInfo,work_detail)}})(filePath,pdfURL,usrInfo,work_detail),0)
-            }else{
+                setTimeout(((filePath, pdfURL, usrInfo, work_detail) => { return () => { delayRun(filePath, pdfURL, usrInfo, work_detail) } })(filePath, pdfURL, usrInfo, work_detail), 0)
+            } else {
                 // 常规上传
-                await delayRun()
+                await delayRun(filePath, pdfURL, usrInfo, work_detail)
             }
         }
     }
-
-
-
-
 
 
     return ctx.body = {
@@ -638,6 +642,7 @@ app.use(koaBody({
 app.use(bodyparser());
 app.use(Token.checkTokenInHttp([
     { url: "^/login/?$", method: "POST", reg: true },
+    { url: "^/handleDone/?$", reg: true },
     { url: "^/tmp(/.*)?$", reg: true },
 ]))
 app.use(require('koa-static')(path.join('./public')))
