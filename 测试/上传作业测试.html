@@ -1,25 +1,212 @@
+<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-file:<input type="file" id="_f" /><br>
-work_code<input id="work_code" /><br>
-token<input id="token" /><br>
-<button onclick="submit()">submit</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/antd/4.9.1/antd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/antd/4.9.1/antd.min.css">
 
-<script>
-    var axios_config = {
+<div id="root"></div>
+<script type="text/babel">
+    let usrList = [
+        ["181090805", "123"],
+        ["181090806", "123"],
+        ["181090807", "123"],
+        ["181090808", "123"],
+        ["181090809", "123"]
+    ]
+    let axios_config = {
         headers: { 'Content-Type': 'multipart/form-data' }
     }
-
-    function submit() {
-        var param = new FormData()
-        param.append('file', _f.files[0])
-        param.append('work_code', work_code.value)
-        param.append('token', token.value)
-        axios.post('http://47.96.235.211:3000/submit_work', param, axios_config)
-            .then((res) => {
-                alert(JSON.stringify(res.data))
-            })
-            .catch((err) => {
-                alert(err)
-            })
+    async function getListToken() {
+        let arr = []
+        usrList.forEach((v, i) => {
+            arr.push(new Promise((resolve, reject) => {
+                let index = i
+                axios.post('http://47.96.235.211:3000/login', {
+                    usr: v[0],
+                    pwd: v[1],
+                }).then((res) => {
+                    usrList[i][2] = res.data.token
+                    resolve()
+                })
+            }))
+        })
+        let d = new Date()
+        await Promise.all(arr)
+        return (new Date() - d) / usrList.length
     }
+    async function submit(quick_submit, setProcessBar, bingfa, setSucc, setLoginTime) {
+        let loginTime = await getListToken()
+        setLoginTime(loginTime)
+
+        let startTime = new Date()
+        let uploadList = []
+        let testList = usrList.slice(0)
+        while (testList.length < bingfa) {
+            testList = [...testList, ...testList]
+        }
+        testList.length = bingfa
+        setSucc(0)
+        if (_f.files.length) testList.forEach((v, i) => {
+            uploadList.push(new Promise((resolve, reject) => {
+                let token = v[2]
+                var param = new FormData()
+                Array.from(_f.files).forEach(v => {
+                    param.append('file', v)
+                })
+                param.append('work_code', work_code.value)
+                param.append('token', token)
+                param.append('quick_submit', quick_submit)
+                axios.post('http://47.96.235.211:3000/submit_work', param, axios_config)
+                    .then((res) => {
+                        setSucc(v => v + 1)
+                        return resolve(JSON.stringify(res.data))
+                    })
+            }))
+        })
+        let res = await Promise.all(uploadList)
+        let diffTime = (new Date() - startTime)
+        return {
+            diffTime,
+            avgTime: diffTime / (res.length || 1),
+        }
+    }
+    const findIndexReverse = (arr, value) => {
+        for (let i = arr.length - 1; i >= 0; i--)
+            if (arr[i] == value) return i
+        return -1
+    }
+</script>
+<script type="text/babel">
+    const { Step } = antd.Steps
+    const { Text } = antd.Typography
+</script>
+<script type="text/babel">
+
+    const App = () => {
+
+        let semaphore = 0
+
+        const [processBar, setProcessBar] = React.useState(0)
+        const [processBarTotal, setProcessBarTotal] = React.useState(1)
+        const [rqstat, setRqstat] = React.useState(false)
+        const [quick_submit, setquick_submit] = React.useState(true)
+        const [handleLeft, setHandleLeft] = React.useState(0)
+        const [total, setTotal] = React.useState(0)
+        const [succ, setSucc] = React.useState(0)
+        const [diffTime, setDiffTime] = React.useState(0)
+        const [avgTime, setAvgTime] = React.useState(0)
+        const [loginTime, setLoginTime] = React.useState(0)
+        const [bingfa, setBingfa] = React.useState(0)
+        const [stepArr, setStepArr] = React.useState([1, 0, 0, 0, 0, 0])
+        const [stepNow, setStepNow] = React.useState(0)
+
+        const sbt = async () => {
+            setTotal(bingfa)
+            setDiffTime(0)
+            setAvgTime(0)
+            let res = await submit(quick_submit, setProcessBar, bingfa, setSucc, setLoginTime)
+            setDiffTime(res.diffTime)
+            setAvgTime(res.avgTime)
+        }
+
+        const customDot = (dot, { status, index }) => (
+            <antd.Popover
+                content={
+                    <span>
+                        步骤 {index + 1} 状态: {status}
+                    </span>
+                }
+            >
+                {dot}
+            </antd.Popover>
+        );
+
+        React.useEffect(() => {
+            let rq = setInterval(async () => {
+                if (rqstat == false) return
+                if (semaphore) return
+                semaphore = 1
+                let res = await axios.get('http://47.96.235.211:3000/handleDone')
+                setHandleLeft(res.data.left)
+                semaphore = 0
+            }, rqstat ? 50 : 2000)
+            return () => clearInterval(rq)
+        }, [rqstat])
+
+        return <div>
+            <antd.Row type="flex" justify="center" align="middle" style={{ minHeight: '100vh' }}>
+                <antd.Col type="flex" justify="center" align="center">
+                    <antd.Space direction="vertical" align="center">
+                        <antd.Row>
+                            <antd.Steps current={stepNow} progressDot={customDot}>
+                                <Step title="就绪" subTitle="已准备好环境" />
+                                <Step title="选择文件" subTitle="选择文档+若干附件" />
+                                <Step title="输入作业码" subTitle="无需改动" />
+                                <Step title="选择并发数" subTitle="0-10000" />
+                                <Step title="启用服务器监听" subTitle="提交文件,测试性能" />
+                                <Step title="查看结果" subTitle={<antd.Button type="primary" shape="circle" onClick={() => setStepNow(0)}>next</antd.Button>} />
+                            </antd.Steps>
+                        </antd.Row>
+                        <antd.Row>
+                            <antd.Space>
+                                <antd.Timeline>
+                                    <antd.Timeline.Item>
+                                        {/*上传文件*/}<input type="file" style={{ border: "1px solid" }} id="_f" multiple="multiple" onChange={() => { setStepNow(1) }} />
+                                    </antd.Timeline.Item>
+                                    <antd.Timeline.Item>
+                                        {/*输入作业码*/}
+                                        <antd.Input
+                                            id="work_code"
+                                            value="Uo9tRt9hNsvXRMKYEYBbbw7bbw7bbw4YB29tRt9hNs9bR6x1kPo8w8dXwUI8i8dTlScjVT6bjPI8wCJOmDJSmEJGnDpatDtD"
+                                            onClick={() => {
+                                                setStepNow(2)
+                                            }}
+                                        />
+                                    </antd.Timeline.Item>
+                                    <antd.Timeline.Item>
+                                        {/*并发数*/}
+                                        <Text strong>并发数：</Text>
+                                        <antd.InputNumber min={0} max={10000} value={bingfa} step={100} onChange={(v) => { setBingfa(v); setStepNow(3) }} />
+                                    </antd.Timeline.Item>
+                                    <antd.Timeline.Item>
+                                        <antd.Space direction="vertical" align="center">
+                                            <antd.Space>
+                                                <antd.Col><antd.Switch size="large" checkedChildren="监听服务器" unCheckedChildren="暂停监听" checked={rqstat} onClick={() => { setRqstat(!rqstat); setStepNow(4) }} /></antd.Col>
+                                                <antd.Col><antd.Switch size="large" checkedChildren="快速上传" unCheckedChildren="普通上传" checked={quick_submit} onClick={() => setquick_submit(v => !v)} /></antd.Col>
+                                            </antd.Space>
+                                            <antd.Col align="middle"><antd.Button type="primary" onClick={() => { sbt(); setStepNow(5) }}>submit</antd.Button></antd.Col>
+                                        </antd.Space>
+                                    </antd.Timeline.Item>
+                                    <antd.Timeline.Item>
+                                        <antd.Statistic title="提交作业数" value={succ} showZero={true} suffix={"/ " + total} />
+                                    </antd.Timeline.Item>
+                                    <antd.Timeline.Item><antd.Row align="center"><antd.Space>
+                                        <antd.Statistic title="登录总用时" value={loginTime * total} showZero={true} suffix="ms" />
+                                        <antd.Statistic title="登录平均用时" value={loginTime} showZero={true} suffix="ms" />
+                                    </antd.Space></antd.Row></antd.Timeline.Item>
+                                    <antd.Timeline.Item><antd.Row align="center"><antd.Space>
+                                        <antd.Statistic title="上传总用时" value={diffTime} showZero={true} suffix="ms" />
+                                        <antd.Statistic title="上传平均用时" value={avgTime} showZero={true} suffix="ms" />
+                                    </antd.Space></antd.Row></antd.Timeline.Item>
+                                    <antd.Timeline.Item>
+                                        <antd.Statistic title="服务器待处理作业" value={handleLeft} formatter={(value) => <antd.Badge count={value} showZero={true} overflowCount={10000} />} suffix="个" />
+                                    </antd.Timeline.Item>
+                                </antd.Timeline>
+                            </antd.Space>
+                        </antd.Row>
+                    </antd.Space>
+                </antd.Col>
+            </antd.Row>
+        </div>
+    }
+</script>
+<script type="text/babel">
+
+    ReactDOM.render(
+        <App />,
+        document.getElementById('root')
+    );
+</script>
+<script>
 </script>
