@@ -112,7 +112,7 @@ content-type: application/json
     "usr":"18109080"
 }
 
-### 获取
+### 获取水印
 POST http://47.96.235.211:3000/watermark_text_get/ HTTP/1.1
 content-type: application/json
 
@@ -121,3 +121,81 @@ content-type: application/json
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
     "text":"18109080"
 }
+
+### 设置水印
+POST http://47.96.235.211:3000/watermark_text/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "text":"18109080"
+}
+
+### 获取此作业码对应的学生上传的附件文件
+POST http://47.96.235.211:3000/download_assignments_plus/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+}
+
+### 获取此作业码对应的学生上传的附件文件
+POST http://47.96.235.211:3000/download_assignments_plus/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+    "usr":"181090808"
+}
+
+### 获取此作业码对应的所有学生账户名称
+POST http://47.96.235.211:3000/get_stu_usr_by_workcode/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+}
+
+### 获取分数
+POST http://47.96.235.211:3000/get_score/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+    "usr":"181090808"
+}
+
+### 打分
+POST http://47.96.235.211:3000/grade_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "work_code":"Uo9tRt9hNsvXRMKYEY8nCJ8pCp4YB29tRt9hNs9bR6x1kPo8w8dHbOMDePN8n8YmYTsx1oQrx1qQMrb8ZenDZ0pDZCnDpStCJWoV1",
+    "updateTarget":[
+        {usr:"181090808",score:95},
+        {usr:"181090809",score:90}
+    ]
+}
+
+### 获取学生详细信息
+POST http://47.96.235.211:3000/grade_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+    "usr":"181090807"
+}
+
+### 获取学生详细信息
+POST http://47.96.235.211:3000/grade_assignments/ HTTP/1.1
+content-type: application/json
+
+{
+    "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3IiOiJ4enkiLCJwd2QiOiJ4enl4enkiLCJpZGVudGlmeSI6MCwiY2xhc3NfbGlzdCI6IltcIui9r-S7tumcgOaxguWIhuaekOS4juiuvuiuoVwiLFwi5pWw5o2u57uT5p6EXCJdIiwibmFtZSI6IuW-kOiHu-WFgyIsImlhdCI6MTYwNjMwODU0NCwiZXhwIjoxNjA2MzEwMzQ0fQ.cxW_f0Ws5EFpKe6rmibnuMXRKiyr6YxiQ5zcwaoE56M",
+}
+
