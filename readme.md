@@ -4,6 +4,10 @@
 [![](https://img.shields.io/badge/nodejs-12.9.0-yellowgreen)](https://nodejs.org/)
 [![](https://img.shields.io/badge/koa-2-green)](https://github.com/koajs/koa)
 
+## 使用手册
+
+[点击跳转](https://github.com/wkmyws/work-submit-system-server/blob/master/docs/%E4%BD%BF%E7%94%A8%E6%89%8B%E5%86%8C.pdf)
+
 ## 项目结构
 
 * /readme
